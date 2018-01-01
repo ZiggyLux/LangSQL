@@ -1,0 +1,45 @@
+@charset "ISO-8859-1";
+/*----------------------------------------------------------------------------*/
+/* Application......... LangSql                                               */
+/* Version............. 1.0                                                   */
+/* Plateforme.......... *                                                     */
+/* Source.............. styles.css                                            */
+/* Dernière MAJ........                                                       */
+/* Auteur.............. Marc CESARINI                                         */
+/* Remarque............ CSS 2                                                 */
+/* Brève description... Feuille de style principale                           */
+/*                                                                            */
+/* Emplacement......... doc                                                   */
+/*----------------------------------------------------------------------------*/
+BODY
+{
+    background-color: rgb(200,255,200);
+    font-family: Garamond;
+    margin-left: 1em;
+    margin-top: 1em;
+}
+
+hr {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+hr.interdiv {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    width: 66%;
+}
+
+p.topbar {
+    margin_top: 0em;
+    margin-bottom: 0em;
+}
+hr.topbar {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+p.shortcuts {
+    position: absolute;
+    top: 10em;
+    left: 0em;
+    right: 10em;
+}

@@ -1,0 +1,92 @@
+@charset "UTF-8";
+/*----------------------------------------------------------------------------*/
+/* Application......... LangSql                                               */
+/* Version............. 1.0                                                   */
+/* Plateforme.......... *                                                     */
+/* Source.............. styles.css                                            */
+/* Dernière MAJ........                                                       */
+/* Auteur.............. Marc CESARINI                                         */
+/* Remarque............ CSS 2                                                 */
+/* Brève description... Feuille de style principale                           */
+/*                                                                            */
+/* Emplacement......... doc                                                   */
+/*----------------------------------------------------------------------------*/
+BODY
+{
+    background-color:#FFFFFF;
+    font-family: Garamond;
+    margin-left: 100px;
+    margin-top: 1em;
+}
+
+hr {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+hr.interdiv {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    width: 66%;
+}
+
+p.topbar {
+    margin_top: 0em;
+    margin-bottom: 0em;
+}
+hr.topbar {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+p.shortcuts {
+    position: absolute;
+    top: 10em;
+    left: 0em;
+    right: 10em;
+}
+table.hshortcuts {
+    position: absolute;
+    top: 0em;
+    left: 0em;
+}
+
+span.page_index {
+	color: #0000FF;
+	text-decoration: underline;
+}
+
+input.russe {
+    font-size: 14pt
+}
+
+input.russe_sm {
+    font-size: 11pt
+}
+
+textarea.russe {
+    font-size: 14pt
+}
+
+TABLE {
+	BORDER-COLLAPSE: collapse;
+	BORDER: #66CCFF;
+}
+
+TH {
+	background-color:#00CC00;
+}
+
+TR.pair {
+	background-color:#FFFFFF;
+}
+
+TR.impair {
+	background-color:#CCFFCC;
+}
+label {
+	color:#006600;
+	font-weight: bold;	
+}
+legend {
+	color:#006600;
+	font-weight: bold;	
+}
