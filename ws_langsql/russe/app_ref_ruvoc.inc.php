@@ -2,11 +2,11 @@
 /****************************************************************************
   Application......... L                                              
   Version............. 1.A                                                   
-  Plateforme.......... Portabilité PHP 4                                     
+  Plateforme.......... Portabilité PHP 5                                     
   Source.............. app_ref_ruvoc.inc.php                                       
   Dernière MAJ........                                                       
   Auteur.............. Marc CESARINI                                         
-  Remarque............ PHP 4                                        
+  Remarque............ PHP 5                                        
   Brève description... Gestion des références de vocables                                                      
                                                                              
   Emplacement.........                                                       
@@ -15,44 +15,62 @@
 include_once("../util/app_ref.inc.php");
 include_once("../util/app_sql.inc.php");
 
-function poke_ref_lstdef ($key, $id) {
+function poke_ref_lstdef ($dbh, $key, $id) {
     
-	/* An id has to be given */
+    /* An id has to be given */
 	if ($id == 0)
 	   die("Unexpected condition.");
 	
 	/* Check if reference already exists */
-	$result = exec_query(
+	$query = 
 		"SELECT * FROM usref WHERE" .
 			" id_urusr=\"" . D_LSQW_REF_USR_DEF . "\" AND" .
-			" str_urkey=\"{$key}\" ;");
-	if (mysql_num_rows($result) == 0) {
+			" str_urkey=\"{$key}\" ;";
+	if (($result = $dbh->query($query)) === FALSE) {
+	    echo 'Erreur dans la requête SQL : ';
+	    echo $query;
+	    exit();
+	}	
+	
+	if (! ($result->fetch(PDO::FETCH_ASSOC))) {
 		// Create the reference value
-		exec_query("INSERT INTO usref SET" .
+	    $query = "INSERT INTO usref SET" .
 			" id_urusr=\"" . D_LSQW_REF_USR_DEF . "\"," .
 			" str_urkey=\"{$key}\"," .
-			" i_urval=\"{$id}\" ;");
+			" i_urval=\"{$id}\" ;";
+	    if (($result = $dbh->exec($query)) === FALSE) {
+	        echo "Erreur DB à l'insertion : ";
+	        echo $query;
+	        exit();
+	    }
 	} else {
 		// Alter the the reference value
-		exec_query("UPDATE usref SET" .
+	    $query = "UPDATE usref SET" .
 			" i_urval=\"{$id}\" WHERE" .
 			" id_urusr=\"" . D_LSQW_REF_USR_DEF . "\" AND" .
-			" str_urkey=\"{$key}\" ;");
+			" str_urkey=\"{$key}\" ;";
+	    if (($result = $dbh->exec($query)) === FALSE) {
+	        echo "Erreur DB à l'insertion : ";
+	        echo $query;
+	        exit();
+	    }
 	}
 }
 
-function peek_ref_lstdef ($key) {
+function peek_ref_lstdef ($dbh, $key) {
 	/* Check if reference already exists */
-	$result = exec_query(
+	$query = 
 		"SELECT * FROM usref WHERE" .
 			" id_urusr=\"" . D_LSQW_REF_USR_DEF . "\" AND" .
-			" str_urkey=\"{$key}\" ;");
-			
-	if (mysql_num_rows($result) > 0) {
-		if ($usref = mysql_fetch_array($result, MYSQL_ASSOC))
-			return $usref["i_urval"];
-		else
-			die("Unexpected condition.");
+			" str_urkey=\"{$key}\" ;";
+	if (($result = $dbh->query($query)) === FALSE) {
+	    echo 'Erreur dans la requête SQL : ';
+	    echo $query;
+	    exit();
+	}
+	echo $query;
+	if ($usref = $result->fetch(PDO::FETCH_ASSOC)) {
+		return $usref["i_urval"];
 	} else {
 		return 0;
 	}

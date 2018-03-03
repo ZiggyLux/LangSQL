@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ruphrquery_ruphr.php                               -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -81,40 +81,48 @@ var tabMAA = new O_MutableAssocArray();
 function load_data() {
 <?php
     /* Connexion à la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
-	/* Jointure sur l'identifiant de list ruvoc pour en récupérer le nom */
+	/* Jointure sur l'identifiant de list ruphr pour en récupérer le nom */
 	if (isset($_POST["id_lisDef_ruphrInit"])
 		&& isset($_POST["id_lisDef_ruphr"])) {
 		$id_lisDef_ruphrInit = $_POST["id_lisDef_ruphrInit"];
 		$id_lisDef_ruphr = $_POST["id_lisDef_ruphr"];
 	} else {
-		$id_lisDef_ruphrInit = peek_ref_lstdef(D_LSQW_REF_USR_PHR_LSTDEF);
+		$id_lisDef_ruphrInit = peek_ref_lstdef($dbh, D_LSQW_REF_USR_PHR_LSTDEF);
 		$id_lisDef_ruphr = $id_lisDef_ruphrInit;
 	}
 	if ($id_lisDef_ruphr != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_ruphr}");
-		
-		$line_lisDef_ruphr = mysql_fetch_array($result, MYSQL_ASSOC)
+		$query = "SELECT str_nom FROM liste where id={$id_lisDef_ruphr}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
+		$line_lisDef_ruphr = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	if ($id_lisDef_ruphrInit != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_ruphrInit}");
+		$query = 
+			"SELECT str_nom FROM liste where id={$id_lisDef_ruphrInit}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_ruphrInit = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_ruphrInit = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 
     /* Déconnexion */
-	disconnect_db($link);
+	disconnect_db($dbh);
 ?>
 }
 /*----------------------------------------------------------------------------*/
@@ -280,7 +288,7 @@ function on_etendue(str) {
 <br/>
 <?php
     /* Connexion à la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
     /* Requêtes SQL pour le chargement de la page */
 	
@@ -344,7 +352,7 @@ function on_etendue(str) {
     print "</table>\n";
 
     /* Déconnexion de la BD */
-	disconnect_db($link);
+	disconnect_db($dbh);
 
 ?>
 <br/>

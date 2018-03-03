@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. esvocquery_prono.php                               -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -124,7 +124,7 @@ function onblur_lgrtest() {
 	
 <?php
     /* Connexion à la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
     /* Requêtes SQL pour le chargement de la page */
 	
@@ -167,7 +167,7 @@ function onblur_lgrtest() {
     print "</table>\n";
 
     /* Déconnexion de la BD */
-	disconnect_db($link);
+	disconnect_db($dbh);
 
 ?>
 <br/>

@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. esvocedit_upd.php                                  -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -78,7 +78,7 @@ function insert_row () {
 }
 
 /*----------------------------------------------------------------------------*/
-/* Retourne requte de mise  jour d'un objet dans la base de donnes         */
+/* Retourne requête de mise à jour d'un objet dans la base de donnes         */
 /*----------------------------------------------------------------------------*/
 function update_row () {
     /* Construction de la requte SQL */
@@ -111,27 +111,42 @@ function delete_row () {
 ?>
 
 <!----------------------------------------------------------------------------->
-<!-- Point d'entre PHP                                                      -->
-<!--     connexion, excution SQL suivant $_POST['action'], dconnexion      -->
+<!-- Point d'entrée PHP                                                      -->
+<!--     connexion, exécution SQL suivant $_POST['action'], déconnexion      -->
 <!----------------------------------------------------------------------------->
 <?php
-    $link = connect_db();
+    $dbh = connect_db();
 
     switch ($_POST["code_action"]) {
     case "ins":
-        exec_query(insert_row());
+        $sql = insert_row();
+        if (($result = $dbh->exec($sql)) === FALSE) {
+            echo "Erreur DB à l'insertion : ";
+            echo $sql;
+            exit();
+        }
         break;
     case "maj":
-        exec_query(update_row());
+        $sql = update_row();
+        if (($result = $dbh->exec($sql)) === FALSE) {
+            echo "Erreur DB à la mise à jour : ";
+            echo $sql;
+            exit();
+        }
         break;
     case "sup":
-        exec_query(delete_row());
-        break;
+        $sql = delete_row();
+        if (($result = $dbh->exec($sql)) === FALSE) {
+            echo "Erreur DB à la mise à jour : ";
+            echo $sql;
+            exit();
+        }
+       break;
     default:
         die("Action not implemented");
     }
 
-    disconnect_db($link);
+    disconnect_db($dbh);
 	
     echo "L'objet " . hed_he($_POST['esvoc']) . " a &eacute;t&eacute; mis &agrave; jour."; 
 ?>

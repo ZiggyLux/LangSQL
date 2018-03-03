@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ruvocquery_prono.php                               -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -81,7 +81,7 @@ var tabMAA = new O_MutableAssocArray();
 function load_data() {
 <?php
     /* Connexion à la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
 	/* Jointure sur l'identifiant de list ruvoc pour en récupérer le nom */
 	if (isset($_POST["id_lisDef_pronoInit"])
@@ -93,28 +93,38 @@ function load_data() {
 		$id_lisDef_prono = $id_lisDef_pronoInit;
 	}
 	if ($id_lisDef_prono != 0) {
-		$result = exec_verbose_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_prono}");
+		$query =
+			"SELECT str_nom FROM liste where id={$id_lisDef_prono}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_prono = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_prono = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	if ($id_lisDef_pronoInit != 0) {
-		$result = exec_verbose_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_pronoInit}");
+		$query =
+			"SELECT str_nom FROM liste where id={$id_lisDef_pronoInit}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_pronoInit = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_pronoInit = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 
     /* Déconnexion */
-	disconnect_db($link);
+	disconnect_db($dbh);
 ?>
 }
 /*----------------------------------------------------------------------------*/
@@ -281,7 +291,7 @@ function on_etendue(str) {
 <br/>
 <?php
     /* Connexion à la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
     /* Requêtes SQL pour le chargement de la page */
 	
@@ -345,7 +355,7 @@ function on_etendue(str) {
     print "</table>\n";
 
     /* Déconnexion de la BD */
-	disconnect_db($link);
+	disconnect_db($dbh);
 
 ?>
 <br/>

@@ -4,7 +4,8 @@
 <!----------------------------------------------------------------------------->
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
-<!-- Plateforme.......... Portable                                           -->
+<!-- Plateforme.......... Portabilité                                        -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ru_reglages.html                                   -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur.............. Marc CESARINI                                      -->
@@ -16,6 +17,7 @@
 <!-- GRANDES EVOLUTIONS                                                      -->
 <!-- Date      Par    Description                                            
      17/7/12   Marc   Version initiale
+     06/01/17  Marc   Accès DB avec PDO
 -->
 <!-- POINTS A TERMINER
 -->
@@ -68,7 +70,7 @@ var tabMAA = new O_MutableAssocArray();
 function load_data() {
 <?php
     /* Connexion à la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
 	/* Initialisation du tableau des valeurs mutables */
 	$tabMAA = new O_MutableAssocArray();
@@ -79,28 +81,38 @@ function load_data() {
 		$id_lisDef_ruvocInit = $_POST["id_lisDef_ruvocInit"];
 		$id_lisDef_ruvoc = $_POST["id_lisDef_ruvoc"];
 	} else {
-		$id_lisDef_ruvocInit = peek_ref_lstdef(D_LSQW_REF_USR_VOC_LSTDEF);
+		$id_lisDef_ruvocInit = peek_ref_lstdef($dbh, D_LSQW_REF_USR_VOC_LSTDEF);
 		$id_lisDef_ruvoc = $id_lisDef_ruvocInit;
 	}
 	if ($id_lisDef_ruvoc != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_ruvoc}");
+		$query =
+			"SELECT str_nom FROM liste where id={$id_lisDef_ruvoc}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_ruvoc = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_ruvoc = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	if ($id_lisDef_ruvocInit != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_ruvocInit}");
+		$query = 
+			"SELECT str_nom FROM liste where id={$id_lisDef_ruvocInit}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_ruvocInit = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_ruvocInit = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	$tabMAA->push("id_lisDef_ruvoc",
 		new O_Mutable($id_lisDef_ruvocInit, $id_lisDef_ruvoc));
@@ -111,28 +123,38 @@ function load_data() {
 		$id_lisDef_pronoInit = $_POST["id_lisDef_pronoInit"];
 		$id_lisDef_prono = $_POST["id_lisDef_prono"];
 	} else {
-		$id_lisDef_pronoInit = peek_ref_lstdef(D_LSQW_REF_USR_PRO_LSTDEF);
+		$id_lisDef_pronoInit = peek_ref_lstdef($dbh, D_LSQW_REF_USR_PRO_LSTDEF);
 		$id_lisDef_prono = $id_lisDef_pronoInit;
 	}
 	if ($id_lisDef_prono != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_prono}");
+		$query = 
+			"SELECT str_nom FROM liste where id={$id_lisDef_prono}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_prono = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_prono = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	if ($id_lisDef_pronoInit != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_pronoInit}");
+		$query = 
+			"SELECT str_nom FROM liste where id={$id_lisDef_pronoInit}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_pronoInit = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_pronoInit = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	$tabMAA->push("id_lisDef_prono",
 		new O_Mutable($id_lisDef_pronoInit, $id_lisDef_prono));
@@ -143,28 +165,38 @@ function load_data() {
 		$id_lisDef_trafrInit = $_POST["id_lisDef_trafrInit"];
 		$id_lisDef_trafr = $_POST["id_lisDef_trafr"];
 	} else {
-		$id_lisDef_trafrInit = peek_ref_lstdef(D_LSQW_REF_USR_TRA_LSTDEF);
+		$id_lisDef_trafrInit = peek_ref_lstdef($dbh, D_LSQW_REF_USR_TRA_LSTDEF);
 		$id_lisDef_trafr = $id_lisDef_trafrInit;
 	}
 	if ($id_lisDef_trafr != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_trafr}");
+		$query = 
+			"SELECT str_nom FROM liste where id={$id_lisDef_trafr}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_trafr = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_trafr = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	if ($id_lisDef_trafrInit != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_trafrInit}");
+		$query = 
+			"SELECT str_nom FROM liste where id={$id_lisDef_trafrInit}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_trafrInit = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_trafrInit = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	$tabMAA->push("id_lisDef_trafr",
 		new O_Mutable($id_lisDef_trafrInit, $id_lisDef_trafr));
@@ -175,28 +207,38 @@ function load_data() {
 		$id_lisDef_ruvrbInit = $_POST["id_lisDef_ruvrbInit"];
 		$id_lisDef_ruvrb = $_POST["id_lisDef_ruvrb"];
 	} else {
-		$id_lisDef_ruvrbInit = peek_ref_lstdef(D_LSQW_REF_USR_VRB_LSTDEF);
+		$id_lisDef_ruvrbInit = peek_ref_lstdef($dbh, D_LSQW_REF_USR_VRB_LSTDEF);
 		$id_lisDef_ruvrb = $id_lisDef_ruvrbInit;
 	}
 	if ($id_lisDef_ruvrb != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_ruvrb}");
+		$query = 
+			"SELECT str_nom FROM liste where id={$id_lisDef_ruvrb}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_ruvrb = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_ruvrb = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	if ($id_lisDef_ruvrbInit != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_ruvrbInit}");
+		$query = 
+			"SELECT str_nom FROM liste where id={$id_lisDef_ruvrbInit}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_ruvrbInit = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_ruvrbInit = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	$tabMAA->push("id_lisDef_ruvrb",
 		new O_Mutable($id_lisDef_ruvrbInit, $id_lisDef_ruvrb));
@@ -207,28 +249,38 @@ function load_data() {
 		$id_lisDef_ruphrInit = $_POST["id_lisDef_ruphrInit"];
 		$id_lisDef_ruphr = $_POST["id_lisDef_ruphr"];
 	} else {
-		$id_lisDef_ruphrInit = peek_ref_lstdef(D_LSQW_REF_USR_PHR_LSTDEF);
+		$id_lisDef_ruphrInit = peek_ref_lstdef($dbh, D_LSQW_REF_USR_PHR_LSTDEF);
 		$id_lisDef_ruphr = $id_lisDef_ruphrInit;
 	}
 	if ($id_lisDef_ruphr != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_ruphr}");
+		$query = 
+			"SELECT str_nom FROM liste where id={$id_lisDef_ruphr}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_ruphr = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_ruphr = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	if ($id_lisDef_ruphrInit != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_ruphrInit}");
+		$query = 
+			"SELECT str_nom FROM liste where id={$id_lisDef_ruphrInit}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_ruphrInit = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_ruphrInit = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	$tabMAA->push("id_lisDef_ruphr",
 		new O_Mutable($id_lisDef_ruphrInit, $id_lisDef_ruphr));
@@ -239,7 +291,7 @@ function load_data() {
 		
 		if ($tabMAA->isEltDirty("id_lisDef_ruvoc")) {
 			// Mise à jour dans la base de données
-			poke_ref_lstdef(D_LSQW_REF_USR_VOC_LSTDEF, $id_lisDef_ruvoc);
+			poke_ref_lstdef($dbh, D_LSQW_REF_USR_VOC_LSTDEF, $id_lisDef_ruvoc);
 			// Réalignement de la variable postée
 			$id_lisDef_ruvocInit = $id_lisDef_ruvoc;
 			$_POST["id_lisDef_ruvocInit"] = $id_lisDef_ruvocInit;
@@ -248,7 +300,7 @@ function load_data() {
 		}
 		if ($tabMAA->isEltDirty("id_lisDef_prono")) {
 			// Mise à jour dans la base de données
-			poke_ref_lstdef(D_LSQW_REF_USR_PRO_LSTDEF, $id_lisDef_prono);
+		    poke_ref_lstdef($dbh, D_LSQW_REF_USR_PRO_LSTDEF, $id_lisDef_prono);
 			// Réalignement de la variable postée
 			$id_lisDef_pronoInit = $id_lisDef_prono;
 			$_POST["id_lisDef_pronoInit"] = $id_lisDef_pronoInit;
@@ -257,7 +309,7 @@ function load_data() {
 		}
 		if ($tabMAA->isEltDirty("id_lisDef_trafr")) {
 			// Mise à jour dans la base de données
-			poke_ref_lstdef(D_LSQW_REF_USR_TRA_LSTDEF, $id_lisDef_trafr);
+		    poke_ref_lstdef($dbh, D_LSQW_REF_USR_TRA_LSTDEF, $id_lisDef_trafr);
 			// Réalignement de la variable postée
 			$id_lisDef_trafrInit = $id_lisDef_trafr;
 			$_POST["id_lisDef_trafrInit"] = $id_lisDef_trafrInit;
@@ -266,7 +318,7 @@ function load_data() {
 		}
 		if ($tabMAA->isEltDirty("id_lisDef_ruvrb")) {
 			// Mise à jour dans la base de données
-			poke_ref_lstdef(D_LSQW_REF_USR_VRB_LSTDEF, $id_lisDef_ruvrb);
+		    poke_ref_lstdef($dbh, D_LSQW_REF_USR_VRB_LSTDEF, $id_lisDef_ruvrb);
 			// Réalignement de la variable postée
 			$id_lisDef_ruvrbInit = $id_lisDef_ruvrb;
 			$_POST["id_lisDef_ruvrbInit"] = $id_lisDef_ruvrbInit;
@@ -275,7 +327,7 @@ function load_data() {
 		}
 		if ($tabMAA->isEltDirty("id_lisDef_ruphr")) {
 			// Mise à jour dans la base de données
-			poke_ref_lstdef(D_LSQW_REF_USR_PHR_LSTDEF, $id_lisDef_ruphr);
+		    poke_ref_lstdef($dbh, D_LSQW_REF_USR_PHR_LSTDEF, $id_lisDef_ruphr);
 			// Réalignement de la variable postée
 			$id_lisDef_ruphrInit = $id_lisDef_ruphr;
 			$_POST["id_lisDef_ruphrInit"] = $id_lisDef_ruphrInit;
@@ -285,7 +337,7 @@ function load_data() {
 	}
 
     /* Déconnexion */
-	disconnect_db($link);
+	disconnect_db($dbh);
 
 ?>
 }
@@ -476,7 +528,7 @@ function maj_parametres() {
 
 <?php
     /* Connexion à la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
     /* Requêtes SQL pour le chargement de la page */
 	
@@ -613,7 +665,7 @@ function maj_parametres() {
     print "</table>\n";
 
     /* Déconnexion de la BD */
-	disconnect_db($link);
+	disconnect_db($dbh);
 ?>
 
 <!----------------------------------------------------------------------------->

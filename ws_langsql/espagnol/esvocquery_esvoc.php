@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. esvocquery_esvoc.php                               -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -118,12 +118,12 @@ function onblur_lgrtest() {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement des lments constituant l'exercice                      --> 
 <!----------------------------------------------------------------------------->
-<h2>Vocabulaire russe - Traduction du fran&ccedil;ais &agrave; l'espagnol</h1>
+<h2>Vocabulaire espagnol - Traduction du fran&ccedil;ais &agrave; l'espagnol</h1>
 <form name="formulaire" id="formulaire" method="POST" 
 	action="esvocquery_esvoc_qry.php" onsubmit="return isvalid();">
 <?php
     /* Connexion à la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
     /* Requêtes SQL pour le chargement de la page */
 	
@@ -166,7 +166,7 @@ function onblur_lgrtest() {
     print "</table>\n";
 
     /* Déconnexion de la BD */
-	disconnect_db($link);
+	disconnect_db($dbh);
 
 ?>
 <br/>

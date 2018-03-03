@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ruvrbinlist.php                                   -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -113,15 +113,20 @@ function pickup_liste() {
 	include_once("../util/app_sql.inc.php");
 
     /* Connecting, selecting database */
-    $link = connect_db();
+    $dbh = connect_db();
 
 	/* Insertion éventuelle d'une nouvelle liste (retour du pickup) */
 	if (isset($_POST['id_liste_acreer'])
 		&& strlen($_POST['id_liste_acreer'])>0) {
-		$result = exec_query("INSERT INTO item SET"
+		$sql = "INSERT INTO item SET"
 			. " id_liste = {$_POST['id_liste_acreer']},"
 			. " id_item = {$id_item},"
-			. " id_type = " . D_LISTE_RUVRB);
+			. " id_type = " . D_LISTE_RUVRB;
+		if (($result = $dbh->exec($sql)) === FALSE) {
+		    echo "Erreur DB à l'insertion : ";
+		    echo $sql;
+		    exit();
+		}
 	}
 
     /* Performing SQL query */
@@ -131,15 +136,22 @@ function pickup_liste() {
 		$where_cond = "AND liste.str_nom LIKE \"%" 
 			. addslashes($_POST['ruvrbinlist_cont_txt']) . "%\" ";
 	
-    $result = exec_query(
+    $query =
 		"SELECT liste.id, liste.str_nom"
 		. " FROM item LEFT JOIN liste ON item.id_liste=liste.id"
 		. " WHERE item.id_type =" . D_LISTE_RUVRB
 		. "   AND item.id_item = {$id_item}"
 		. "   {$where_cond}"
-		. " ORDER BY liste.str_nom");
+		. " ORDER BY liste.str_nom";
 
-    /* Printing results in HTML */
+	
+	if (($result = $dbh->query($query)) === FALSE) {
+	    echo 'Erreur dans la requête SQL : ';
+	    echo $query;
+	    exit();
+	}
+
+	/* Printing results in HTML */
     print "<table width='500px'>\n";
 	
     /* Header */
@@ -149,7 +161,7 @@ function pickup_liste() {
     print "\t</tr>\n";
 
 	$fPair = false;
-    while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+	while ($line = $result->fetch(PDO::FETCH_ASSOC)) {
 		$fPair = !$fPair;
 		$trClass = ($fPair)? "pair" : "impair";
 	    print "\t<tr class=\"{$trClass}\">\n";
@@ -161,10 +173,10 @@ function pickup_liste() {
     print "</table>\n";
 
     /* Free resultset */
-    mysql_free_result($result);
-
+    $result = NULL;
+    
     /* Closing connection */
-	disconnect_db($link);
+	disconnect_db($dbh);
 ?>
 </form>
 <hr >

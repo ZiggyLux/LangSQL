@@ -2,22 +2,30 @@
 /****************************************************************************
   Application......... langSql                                              
   Version............. 1.A                                                   
-  Plateforme.......... Portabilité PHP 4                                     
+  Plateforme.......... Portabilité PHP 5                                     
   Source.............. esvocquery.inc.php                                       
   Dernire MAJ........                                                       
   Auteur.............. Marc CESARINI                                         
-  Remarque............ PHP 4                                        
+  Remarque............ PHP 5                                        
   Brève description... Fonctions PHP communes pour interrogations                                                       
                                                                              
   Emplacement.........                                                       
 *****************************************************************************/
 function random_ids ($cIds) {
 	
+    /* Connexion à la base de données */
+    $dbh = connect_db();
+    
     /* Requête pour trouver le nombre d'entrées du dictionnaire */
-    $result = exec_query("SELECT max(id) FROM esvoc");
+    $query = "SELECT max(id) FROM esvoc";
+    if (($result = $dbh->query($query)) === FALSE) {
+        echo 'Erreur dans la requête SQL : ';
+        echo $query;
+        exit();
+    }
     
     /* Construction du tableau de questions */
-    if ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    if ($line = $result->fetch(PDO::FETCH_ASSOC)) {
     	$n = (int) $line['max(id)'];
 		$selstr="";
 	    for ($i=0; $i<$cIds; $i++) {
@@ -32,9 +40,14 @@ function random_ids ($cIds) {
 	    		}	
 	    		
 				/* Vérification	existence dans BD */
-		   	    $result_x = exec_query("SELECT id FROM esvoc WHERE id={$x}");
-				if (!mysql_fetch_array($result_x, MYSQL_ASSOC)) {
-				    mysql_free_result($result_x);
+	    		$query_x = "SELECT id FROM esvoc WHERE id={$x}";
+	    		if (($result_x = $dbh->query($query_x)) === FALSE) {
+	    		    echo 'Erreur dans la requête SQL : ';
+	    		    echo $query_x;
+	    		    exit();
+	    		}
+	    		if (!$result_x->fetch(PDO::FETCH_ASSOC)) {
+				    $result_x = NULL;
 					continue; /* Inexistent dans BD, on recommence ce tirage */
 				}
 				break;
@@ -44,8 +57,11 @@ function random_ids ($cIds) {
 	    $selstr = implode(",", $arr);
 	}
     /* Libère le résultat */
-    mysql_free_result($result);
-
+	$result = NULL;
+	
+	/* Closing connection */
+	disconnect_db($dbh);
+	
 	return $selstr;
 }
 

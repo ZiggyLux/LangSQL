@@ -2,7 +2,7 @@
 /****************************************************************************
   Application......... langSql                                              
   Version............. 1.A                                                   
-  Plateforme.......... Portabilité PHP 4                                     
+  Plateforme.......... Portabilité PHP 5                                     
   Source.............. ruphrquery.inc.php                                       
   Dernière MAJ........                                                       
   Auteur.............. Marc CESARINI                                         
@@ -14,12 +14,20 @@
 include_once("../liste/liste.inc.php");
 
 function random_ids ($cIds) {
-	
+    
+    /* Connexion à la base de données */
+    $dbh = connect_db();
+    
     /* Requête pour trouver le nombre d'entrées de la table des phrases */
-    $result = exec_query("SELECT max(id) FROM ruphr");
+    $query = "SELECT max(id) FROM ruphr";
+    if (($result = $dbh->query($query)) === FALSE) {
+        echo 'Erreur dans la requête SQL : ';
+        echo $query;
+        exit();
+    }
     
     /* Construction du tableau de questions */
-    if ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    if ($line = $result->fetch(PDO::FETCH_ASSOC)) {
     	$n = (int) $line['max(id)'];
 		$selstr="";
 	    for ($i=0; $i<$cIds; $i++) {
@@ -34,9 +42,14 @@ function random_ids ($cIds) {
 	    		}	
 	    		
 				/* Vérification	existence dans BD */
-		   	    $result_x = exec_query("SELECT id FROM ruphr WHERE id={$x}");
-				if (!mysql_fetch_array($result_x, MYSQL_ASSOC)) {
-				    mysql_free_result($result_x);
+		   	    $query_x = "SELECT id FROM ruphr WHERE id={$x}";
+		   	    if (($result_x = $dbh->query($query_x)) === FALSE) {
+		   	        echo 'Erreur dans la requête SQL : ';
+		   	        echo $query_x;
+		   	        exit();
+		   	    }
+		   	    if (!$result_x->fetch(PDO::FETCH_ASSOC)) {
+		   	        $result_x = NULL;
 					continue; /* Inexistent dans BD, on recommence ce tirage */
 				}
 				break;
@@ -46,21 +59,39 @@ function random_ids ($cIds) {
 	    $selstr = implode(",", $arr);
 	}
     /* Libère le résultat */
-    mysql_free_result($result);
+	$result = NULL;
 
-	return $selstr;
+    /* Closing connection */
+    disconnect_db($dbh);
+    
+    return $selstr;
 }
 
 function random_ids_fromlist ($cIds, $IdList) {
+    /* Connexion à la base de données */
+    $dbh = connect_db();
+    
     /* Requête pour trouver le nombre d'entrées de la liste */
 	$where_cond = "";
-    $result = exec_query(
-		"SELECT id_item"
-		. " FROM item"
-		. " WHERE item.id_type = " . D_LISTE_RUPHR
-		. "   AND item.id_liste = {$IdList}"
-		. "   {$where_cond}");
-	$n = mysql_num_rows($result);
+	$query_sub =
+	    " FROM item"
+	    . " WHERE item.id_type = " . D_LISTE_RUPHR
+	    . "   AND item.id_liste = {$IdList}"
+	    . "   {$where_cond}";
+	$query = "SELECT id_item {$query_sub}";
+    if (($result = $dbh->query($query)) === FALSE) {
+        echo 'Erreur dans la requête SQL : ';
+        echo $query;
+        exit();
+    }
+    
+    $query_cnt = "SELECT COUNT(*) {$query_sub}";
+    if (($result_cnt = $dbh->query($query_cnt)) === FALSE) {
+        echo 'Erreur dans la requête SQL : ';
+        echo $query;
+        exit();
+    }
+	$n = $result_cnt->fetchColumn();
 	
     /* Construction du tableau de questions */
 	$cQuestion = ($cIds < $n)? $cIds: $n;
@@ -78,18 +109,21 @@ function random_ids_fromlist ($cIds, $IdList) {
 	    		}	
 	    		
 				/* Récupération de l'id de l'item dans le résultat */
-				if (!mysql_data_seek($result, ($x - 1)))
-					continue; // Si échec (improbable), on recommence ce tirage
-				
-				if (!($line = mysql_fetch_array($result, MYSQL_ASSOC)))
+				if (!($line
+				    = $result->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_ABS, ($x - 1))))
 					continue; // Echec (improbable), on recommence ce tirage
 				
 				$idItem = $line["id_item"];
 				
 				/* Vérification	existence dans BD */
-		   	    $result_x = exec_query("SELECT id FROM ruphr WHERE id={$idItem}");
-				if (!mysql_fetch_array($result_x, MYSQL_ASSOC)) {
-				    mysql_free_result($result_x);
+		   	    $query_x = "SELECT id FROM ruphr WHERE id={$idItem}";
+		   	    if (($result_x = $dbh->query($query_x)) === FALSE) {
+		   	        echo 'Erreur dans la requête SQL : ';
+		   	        echo $query_x;
+		   	        exit();
+		   	    }
+		   	    if (!$result_x->fetch(PDO::FETCH_ASSOC)) {
+		   	        $result_x = NULL;
 					continue; /* Inexistent dans BD, on recommence ce tirage */
 				}
 				break;
@@ -99,9 +133,12 @@ function random_ids_fromlist ($cIds, $IdList) {
 	    $selstr = implode(",", $arr);
 	}
     /* Libre le résultat */
-    mysql_free_result($result);
+	$result = NULL;
 
-	return $selstr;
+    /* Closing connection */
+    disconnect_db($dbh);
+    
+    return $selstr;
 }
 
 ?>

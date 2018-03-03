@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ruvocedit_upd.php                                  -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -16,6 +16,8 @@
 */ 
 	include_once("../util/app_mod.inc.php");
 	include_once("../util/app_cod.inc.php");
+    include_once("../util/app_sql.inc.php");
+    include_once("../liste/liste.inc.php");
 ?>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -28,8 +30,6 @@
 <title>Vocabulaire russe - Edition</title>
 </head>
 <body>
-<?php include_once("../util/app_sql.inc.php"); ?>
-<?php include_once("../liste/liste.inc.php"); ?>
 <?php include("../russe/menu_russe.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
@@ -120,24 +120,44 @@ function delete_row_items () {
 <!--     connexion, exécution SQL suivant $_POST['code_action'], déconnexion -->
 <!----------------------------------------------------------------------------->
 <?php
-    $link = connect_db();
+    $dbh = connect_db();
 
     switch ($_POST["code_action"]) {
     case "ins":
-        exec_query(insert_row());
+        $sql = insert_row();
+        if (($result = $dbh->exec($sql)) === FALSE) {
+            echo "Erreur DB à l'insertion : ";
+            echo $sql;
+            exit();
+        }
         break;
     case "maj":
-        exec_query(update_row());
+        $sql = update_row();
+        if (($result = $dbh->exec($sql)) === FALSE) {
+            echo "Erreur DB à la mise à jour : ";
+            echo $sql;
+            exit();
+        }
         break;
     case "sup":
-        exec_query(delete_row_items());
-        exec_query(delete_row());
+        $sql = delete_row_items();
+        if (($result = $dbh->exec($sql)) === FALSE) {
+            echo "Erreur DB à la mise à jour : ";
+            echo $sql;
+            exit();
+        }
+        $sql = delete_row();
+        if (($result = $dbh->exec($sql)) === FALSE) {
+            echo "Erreur DB à la mise à jour : ";
+            echo $sql;
+            exit();
+        }
         break;
     default:
         die("Action not implemented");
     }
 
-    disconnect_db($link);
+    disconnect_db($dbh);
 	
     echo "L'objet " . hed_he($_POST['ruvoc']) . " a &eacute;t&eacute; mis &agrave; jour."; 
 ?>

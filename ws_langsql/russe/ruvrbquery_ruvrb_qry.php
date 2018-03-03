@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ruvrbquery_ruvrb.php                               -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -67,7 +67,7 @@ function on_reponse(id_vrb) {
 	include_once("../util/app_sql.inc.php");
 
    /* Connexion et selection de la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
 	/* Tirage aléatoire */
 	
@@ -93,7 +93,7 @@ function on_reponse(id_vrb) {
 	}
 
 	/* Sélection des éléments tirés au hasard */
-    $result = exec_query(
+    $query =
     	"SELECT id, str_indic,"
 			. " str_ruvip_inf, str_ruvpd_inf, str_ruvpi_inf,"
 			. " str_ruvip_pre_1s, str_ruvip_pre_2s, str_ruvip_pre_3p,"
@@ -103,8 +103,14 @@ function on_reponse(id_vrb) {
 			. " str_ruvpi_pre_1s, str_ruvpi_pre_2s, str_ruvpi_pre_3p,"
 			. " str_ruvpi_pas_ms, str_ruvpi_pas_fs, str_ruvpi_pas_ns, str_ruvpi_pas_pl"
 	    	. " FROM ruvrb"
-    		. " WHERE id in ({$selstr})");
-
+    		. " WHERE id in ({$selstr})";
+    		
+	if (($result = $dbh->query($query)) === FALSE) {
+	    echo 'Erreur dans la requête SQL : ';
+	    echo $query;
+	    exit();
+	}
+		
     /* Tableau HTML des questions */
     print "<table width='900px' style='font-size:14pt'>\n";
     print "\t<tr>\n";
@@ -117,7 +123,7 @@ function on_reponse(id_vrb) {
     print "\t\t<th>R&eacute;ponse</th>\n";
     print "\t</tr>\n";
 	$fPair = false;
-    for ($i=1; $line = mysql_fetch_array($result, MYSQL_ASSOC); $i++) {
+	for ($i=1; $line = $result->fetch(PDO::FETCH_ASSOC); $i++) {
 		$fPair = !$fPair;
 		$trClass = ($fPair)? "pair" : "impair";
 
@@ -258,10 +264,10 @@ function on_reponse(id_vrb) {
     }
     print "</table>\n";
     /* Libration du résultat */
-    mysql_free_result($result);
+    $result = NULL;
     
     /* Dconnexion */
-    disconnect_db($link);
+    disconnect_db($dbh);
 ?>
 <br />
 <input type='submit' value='Nouveau test'/>

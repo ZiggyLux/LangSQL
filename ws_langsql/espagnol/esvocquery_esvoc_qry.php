@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. esvocquery_esvoc.php                               -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -67,7 +67,7 @@ function on_reponse(id_voc) {
 	include_once("../util/app_sql.inc.php");
 
    /* Connexion et sélection de la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
 	/* Tirage aléatoire */
 	if (isset($_POST["id_lgrtest"])) {
@@ -87,10 +87,15 @@ function on_reponse(id_voc) {
 	}
 
 	/* Sélection des éléments tirés au hasard */
-    $result = exec_query(
-    	"SELECT id, str_trafr, str_frctx, str_esvoc "
+    $query = "SELECT id, str_trafr, str_frctx, str_esvoc "
 	    	. " FROM esvoc"
-    		. " WHERE id in ({$selstr})");
+    		. " WHERE id in ({$selstr})";
+
+    if (($result = $dbh->query($query)) === FALSE) {
+        echo 'Erreur dans la requête SQL : ';
+        echo $query;
+        exit();
+    }
 
     /* Tableau HTML des questions */
     print "<table width='900px' style='font-size:14pt'>\n";
@@ -101,7 +106,7 @@ function on_reponse(id_voc) {
     print "\t\t<th>R&eacute;ponse</th>\n";
     print "\t</tr>\n";
 	$fPair = false;
-    for ($i=1; $line = mysql_fetch_array($result, MYSQL_ASSOC); $i++) {
+	for ($i=1; $line = $result->fetch(PDO::FETCH_ASSOC); $i++) {
 		$fPair = !$fPair;
 		$trClass = ($fPair)? "pair" : "impair";
 
@@ -123,11 +128,12 @@ function on_reponse(id_voc) {
         print "\t</tr>\n";
     }
     print "</table>\n";
+    
     /* Libration du résultat */
-    mysql_free_result($result);
+    $result = NULL;
     
     /* Déconnexion */
-    disconnect_db($link);
+    disconnect_db($dbh);
 ?>
 <br />
 <input type='submit' value='Nouveau test'/>

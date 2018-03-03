@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ruvocquery_ruvoc.php                               -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -80,7 +80,7 @@ var tabMAA = new O_MutableAssocArray();
 function load_data() {
 <?php
     /* Connexion à la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
 	/* Jointure sur l'identifiant de list ruvoc pour en récupérer le nom */
 	if (isset($_POST["id_lisDef_ruvocInit"])
@@ -88,32 +88,42 @@ function load_data() {
 		$id_lisDef_ruvocInit = $_POST["id_lisDef_ruvocInit"];
 		$id_lisDef_ruvoc = $_POST["id_lisDef_ruvoc"];
 	} else {
-		$id_lisDef_ruvocInit = peek_ref_lstdef(D_LSQW_REF_USR_VOC_LSTDEF);
+		$id_lisDef_ruvocInit = peek_ref_lstdef($dbh, D_LSQW_REF_USR_VOC_LSTDEF);
 		$id_lisDef_ruvoc = $id_lisDef_ruvocInit;
 	}
 	if ($id_lisDef_ruvoc != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_ruvoc}");
+		$query =
+			"SELECT str_nom FROM liste where id={$id_lisDef_ruvoc}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_ruvoc = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_ruvoc = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 	if ($id_lisDef_ruvocInit != 0) {
-		$result = exec_query(
-			"SELECT str_nom FROM liste where id={$id_lisDef_ruvocInit}");
+		$query =
+			"SELECT str_nom FROM liste where id={$id_lisDef_ruvocInit}";
+		if (($result = $dbh->query($query)) === FALSE) {
+		    echo 'Erreur dans la requête SQL : ';
+		    echo $query;
+		    exit();
+		}
 		
-		$line_lisDef_ruvocInit = mysql_fetch_array($result, MYSQL_ASSOC)
+		$line_lisDef_ruvocInit = $result->fetch(PDO::FETCH_ASSOC)
 			or die("Query failed");
 		
 		// Libère le resultset
-		mysql_free_result($result);
+		$result = NULL;
 	}
 
     /* Déconnexion */
-	disconnect_db($link);
+	disconnect_db($dbh);
 ?>
 }
 /*----------------------------------------------------------------------------*/
@@ -279,7 +289,7 @@ function on_etendue(str) {
 <br/>
 <?php
     /* Connexion à la base de données */
-    $link = connect_db();
+    $dbh = connect_db();
 
     /* Requêtes SQL pour le chargement de la page */
 	
@@ -343,7 +353,7 @@ function on_etendue(str) {
     print "</table>\n";
 
     /* Déconnexion de la BD */
-	disconnect_db($link);
+	disconnect_db($dbh);
 
 ?>
 <br/>

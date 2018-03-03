@@ -177,7 +177,7 @@ function onposition(idx, id) {
 	}
 
     /* Connecting, selecting database */
-    $link = connect_db();
+    $dbh = connect_db();
 
     /* Performing SQL query */
 	
@@ -209,8 +209,12 @@ function onposition(idx, id) {
 		. "ORDER BY id_type, str_nom, id "
 		. "LIMIT " . D_APPW_LOC_LISTE_LIMIT;
 
-    $result = exec_query($query);
-
+    if (($result = $dbh->query($query)) === FALSE) {
+        echo 'Erreur dans la requête SQL : ';
+        echo $query;
+        exit();
+    }
+    
     /* Printing results in HTML */
     print "<table width='500px'>\n";
 	
@@ -226,7 +230,7 @@ function onposition(idx, id) {
 	$arrPage = array();
     
 	$fPair = false;
-    while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+	while ($line = $result->fetch(PDO::FETCH_ASSOC)) {
 
 		/* By page walking: line and page counting */
 		$iLine++;
@@ -256,10 +260,10 @@ function onposition(idx, id) {
 	array_walk($arrPage, 'arrayWalkPageValue');
 
     /* Free resultset */
-    mysql_free_result($result);
+	$result = NULL;
 
     /* Closing connection */
-	disconnect_db($link);
+	disconnect_db($dbh);
 ?>
 <input type="hidden" name="listeedit_sel" id="listeedit_sel" value="0"/>
 <input type="hidden" name="listeedit_mod" id="listeedit_mod" value=""/>

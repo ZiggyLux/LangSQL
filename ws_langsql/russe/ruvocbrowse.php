@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ruvocbrowse.php                                    -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -169,7 +169,7 @@ function onlistes() {
 	}
 
     /* Connecting, selecting database */
-    $link = connect_db();
+    $dbh = connect_db();
 
     /* Performing SQL query */
 	
@@ -206,8 +206,12 @@ function onlistes() {
 		. "ORDER BY str_ruidx, id "
 		. "LIMIT " . D_APPW_LOC_RUVOC_LIMIT;
 		
-	$result = exec_query($query);
-
+	if (($result = $dbh->query($query)) === FALSE) {
+	    echo 'Erreur dans la requête SQL : ';
+	    echo $query;
+	    exit();
+	}
+		
     /* Printing results in HTML */
     print "<table width='700px' style='font-size:14pt'>\n";
 	
@@ -223,7 +227,7 @@ function onlistes() {
 	$arrPage = array();
     
 	$fPair = false;
-	while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+	while ($line = $result->fetch(PDO::FETCH_ASSOC)) {
 		$fPair = !$fPair;
 		$trClass = ($fPair)? "pair" : "impair";
 
@@ -259,10 +263,10 @@ function onlistes() {
 	array_walk($arrPage, 'arrayWalkPageValue');
 
     /* Free resultset */
-    mysql_free_result($result);
-
+	$result = NULL;
+	
     /* Closing connection */
-	disconnect_db($link);
+	disconnect_db($dbh);
 ?>
 <!-- By page walking: http data -->
 <input type="hidden" name="ruvocbrowse_pos_val" id="ruvocbrowse_pos_val" value=""/>

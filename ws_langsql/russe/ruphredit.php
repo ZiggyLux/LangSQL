@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ruphredit.php                                      -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -109,18 +109,23 @@ function load_data() {
 
     if ($_POST["ruphredit_mod"]!="ins") {
 		/* Connecting, selecting database */
-		$link = connect_db();
+		$dbh = connect_db();
     
         /* Performing SQL query */
-        $result = exec_query("SELECT * FROM ruphr WHERE id={$_POST['ruphredit_sel']}");
-    
-        $line = mysql_fetch_array($result, MYSQL_ASSOC) or die("Query failed");
+        $query = "SELECT * FROM ruphr WHERE id={$_POST['ruphredit_sel']}";
+        if (($result = $dbh->query($query)) === FALSE) {
+            echo 'Erreur dans la requête SQL : ';
+            echo $query;
+            exit();
+        }
+        
+        $line = $result->fetch(PDO::FETCH_ASSOC) or die("Query failed");
     
         /* Free resultset */
-        mysql_free_result($result);
+        $result = NULL;
     
 		/* Closing connection */
-		disconnect_db($link);
+		disconnect_db($dbh);
     }
 ?>
 }

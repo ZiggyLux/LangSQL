@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ruphrlistis.php                                    -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -177,14 +177,19 @@ function onposition(idx, id) {
 	}
 
     /* Connecting, selecting database */
-    $link = connect_db();
+    $dbh = connect_db();
 
 	/* Insertion éventuelle d'un nouvel item (retour du pickup) */
 	if (isset($_POST['id_item_acreer'])	&& strlen($_POST['id_item_acreer'])>0) {
-		$result = exec_query("INSERT INTO item SET"
+		$sql = "INSERT INTO item SET"
 			. " id_liste = {$id_liste},"
 			. " id_item = {$_POST['id_item_acreer']},"
-			. " id_type =" . D_LISTE_RUPHR);
+			. " id_type =" . D_LISTE_RUPHR;
+		if (($result = $dbh->exec($sql)) === FALSE) {
+		    echo "Erreur DB à l'insertion : ";
+		    echo $sql;
+		    exit();
+		}
 	}
 
     /* Performing SQL query */
@@ -225,8 +230,12 @@ function onposition(idx, id) {
 		. "ORDER BY ruphr.str_ruidx, ruphr.id "
 		. "LIMIT " . D_APPW_LOC_RUPHR_LIMIT;
 
-	$result = exec_query($query);
-
+	if (($result = $dbh->query($query)) === FALSE) {
+	    echo 'Erreur dans la requête SQL : ';
+	    echo $query;
+	    exit();
+	}
+		
     /* Printing results in HTML */
     print "<table width='700px'>\n";
 	
@@ -242,7 +251,7 @@ function onposition(idx, id) {
 	$arrPage = array();
     
 	$fPair = false;
-    while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+	while ($line = $result->fetch(PDO::FETCH_ASSOC)) {
 
 		/* By page walking: line and page counting */
 		$iLine++;
@@ -272,10 +281,10 @@ function onposition(idx, id) {
 	array_walk($arrPage, 'arrayWalkPageValue');
 
     /* Free resultset */
-    mysql_free_result($result);
+	$result = NULL;
 
     /* Closing connection */
-	disconnect_db($link);
+	disconnect_db($dbh);
 ?>
 <!-- By page walking: http data -->
 <input type="hidden" name="ruphrlistis_pos_val" id="ruphrlistis_pos_val" value=""/>

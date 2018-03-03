@@ -5,7 +5,7 @@
 <!-- Application......... LangSql                                            -->
 <!-- Version............. 1.0                                                -->
 <!-- Plateforme.......... Portabilité                                        -->
-<!--                      HTML 4.0, PHP 4, MySQL, Javascript                 -->
+<!--                      HTML 4.0, PHP 5, MySQL, Javascript                 -->
 <!-- Source.............. ruvocinlist_sup.php                                -->
 <!-- Dernière MAJ........                                                    -->
 <!-- Auteur..............                                                    -->
@@ -51,11 +51,16 @@ function delete_row () {
 <!--     connexion, exécution SQL suivant $_POST['code_action'], déconnexion -->
 <!----------------------------------------------------------------------------->
 <?php
-    $link = connect_db();
+    $dbh = connect_db();
 
-    exec_query(delete_row());
-
-    disconnect_db($link);
+    $sql = delete_row();
+    if (($result = $dbh->exec($sql)) === FALSE) {
+        echo "Erreur DB à la mise à jour : ";
+        echo $sql;
+        exit();
+    }
+    
+    disconnect_db($dbh);
 	
     print("<br>\nL'association a &eacute;t&eacute; supprim&eacute;e."); 
 ?>
