@@ -68,7 +68,6 @@ function peek_ref_lstdef ($dbh, $key) {
 	    echo $query;
 	    exit();
 	}
-	echo $query;
 	if ($usref = $result->fetch(PDO::FETCH_ASSOC)) {
 		return $usref["i_urval"];
 	} else {
