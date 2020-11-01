@@ -112,15 +112,15 @@ function on_reponse(id_vrb) {
 	}
 		
     /* Tableau HTML des questions */
-    print "<table width='900px' style='font-size:14pt'>\n";
+    print "<table width='1000px' style='font-size:14pt'>\n";
     print "\t<tr>\n";
     print "\t\t<th colspan=\"2\">Sens du verbe<br>Aspect</th>\n";
 	print "\t\t<th colspan=\"2\">Temps et personne</th>\n";
     print "\t</tr><tr>\n";
     print "\t\t<th width='275px'>Votre infinitif</th>\n";
-    print "\t\t<th>R&eacute;ponse</th>\n";
+    print "\t\t<th width='150px'>R&eacute;ponse</th>\n";
     print "\t\t<th width='275px'>Votre conjugaison</th>\n";
-    print "\t\t<th>R&eacute;ponse</th>\n";
+    print "\t\t<th width='150px'>R&eacute;ponse</th>\n";
     print "\t</tr>\n";
 	$fPair = false;
 	for ($i=1; $line = $result->fetch(PDO::FETCH_ASSOC); $i++) {

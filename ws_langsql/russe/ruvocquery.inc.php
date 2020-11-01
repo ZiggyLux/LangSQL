@@ -75,17 +75,11 @@ function random_ids_fromlist ($cIds, $IdList) {
     /* Requête pour trouver le nombre d'entrées de la liste */
 	$where_cond = "";
     $query_sub =
-		" FROM item"
+		" FROM item, ruvoc"
 		. " WHERE item.id_type = " . D_LISTE_RUVOC
 		. "   AND item.id_liste = {$IdList}"
+		. "   AND (id = id_item)"
 		. "   {$where_cond}";
-	$query = "SELECT id_item {$query_sub}";	
-	if (($result = $dbh->query($query)) === FALSE) {
-	    echo 'Erreur dans la requête SQL : ';
-	    echo $query;
-	    exit();
-	}
-
 	$query_cnt = "SELECT COUNT(*) {$query_sub}";
 	if (($result_cnt = $dbh->query($query_cnt)) === FALSE) {
 	    echo 'Erreur dans la requête SQL : ';
@@ -94,45 +88,45 @@ function random_ids_fromlist ($cIds, $IdList) {
 	}
 	$n = $result_cnt->fetchColumn();
 	
-    /* Construction du tableau de questions */
-	$cQuestion = ($cIds < $n)? $cIds: $n;
-    if ($cQuestion > 0) {
-		$selstr="";
-	    for ($i=0; $i<$cQuestion; $i++) {
-	    	while (TRUE) {
-	    		$x = mt_rand(1, $n);
-				if ($i>1) {
-					reset($arr);					
-	    			for ($fnd = FALSE; !$fnd && list(, $arrv) = each($arr);)
-	    				$fnd = ($arrv == $x);
-	    			if ($fnd)
-	    				continue; /* Déjà tiré, on recommence ce tirage */
-	    		}	
-	    		
-				/* Récupération de l'id de l'item dans le résultat */
-	    		if (!($line
-	    		    = $result->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_ABS, ($x - 1))))
-	    		    continue; // Echec (improbable), on recommence ce tirage
-	    		    
-				$idItem = $line["id_item"];
-				
-				/* Vérification	existence dans BD */
-		   	    $query_x = "SELECT id FROM ruvoc WHERE id={$idItem}";
-		   	    if (($result_x = $dbh->query($query_x)) === FALSE) {
-		   	        echo 'Erreur dans la requête SQL : ';
-		   	        echo $query_x;
-		   	        exit();
-		   	    }
-		   	    if (!$result_x->fetch(PDO::FETCH_ASSOC)) {
-		   	        $result_x = NULL;
-		   	        continue; /* Inexistent dans BD, on recommence ce tirage */
-		   	    }
-		   	    break;
-	    	}
- 		    $arr[$i] = $idItem;
-		}
-	    $selstr = implode(",", $arr);
+	$query = "SELECT id_item {$query_sub}";	
+	if (($result = $dbh->query($query)) === FALSE) {
+	    echo 'Erreur dans la requête SQL : ';
+	    echo $query;
+	    exit();
 	}
+
+	/* Construction du tableau de questions */
+	$cQuestion = ($cIds < $n)? $cIds: $n;
+	
+    /* Tirage au sort des questions */
+    $arrT = array();
+    for ($i=0; $i<$cQuestion; $i++) {
+    	while (TRUE) {
+    		$x = mt_rand(1, $n);
+			if (! in_array($x, $arrT))
+    			break; /* Non encore Déjà tiré,  */
+    	}
+    	$arrT[$i] = $x;
+    }
+    $tirstr = implode(",", $arrT);
+
+    $cResteALire = $cQuestion ;
+    $i = 0;
+    $arrItem = array();
+	while ($cResteALire > 0) {
+		if (! ($line = $result->fetch(PDO::FETCH_ASSOC))) break;
+		
+		reset($arrT);
+		for ($fnd = FALSE; !$fnd && list(, $arrTval) = each($arrT);)
+			$fnd = ($arrTval == $i);
+		if ($fnd) {
+			$arrItem[$i] = $line['id_item'];
+			$cResteALire--;
+		}
+		$i++;
+	}
+    $selstr = implode(",", $arrItem);
+    
     /* Libre le résultat */
 	$result = NULL;
 
