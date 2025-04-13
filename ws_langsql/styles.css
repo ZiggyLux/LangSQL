@@ -15,7 +15,7 @@ BODY
 {
     background-color:#FFFFFF;
     font-family: Garamond;
-    margin-left: 100px;
+    margin-left: 1em;
     margin-top: 1em;
 }
 
@@ -82,6 +82,11 @@ TR.pair {
 TR.impair {
 	background-color:#CCFFCC;
 }
+
+span.ctx {
+	color:#7B7B7B;	
+}
+
 label {
 	color:#006600;
 	font-weight: bold;	
@@ -89,4 +94,10 @@ label {
 legend {
 	color:#006600;
 	font-weight: bold;	
+}
+#principal {
+	float: letf;
+	clear: left;
+	width: 100%;
+	border: 1px #CCFFCC solid;
 }

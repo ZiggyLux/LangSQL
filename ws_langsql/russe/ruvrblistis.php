@@ -19,7 +19,8 @@
 	include_once("../util/app_cod.inc.php");
 	include_once("../liste/liste.inc.php");
 	include_once("../util/app_ses.inc.php");
-
+	include_once("ruutil.inc.php");
+	
 	ouvertureSession();
 	associePageRetour($_SERVER['SCRIPT_NAME'], "retpag");
 	$listenom =
@@ -34,11 +35,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="langue,russe,verbe">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Verbes de la liste "<?php print $listenom; ?>"</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -118,36 +120,30 @@ function onposition(idx, id) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement de la table avec les verbes de la base de données        --> 
 <!----------------------------------------------------------------------------->
-<h1>Verbes de la liste "<?php print $listenom; ?>" - Gestion</h1>
-<form name="formulaire" id="formulaire" method="POST">
+<div id = "principal">
+<h2>Verbes de la liste "<?php print $listenom; ?>" - Gestion</h2>
+</div>
+<form name="formulaire" id="formulaire" method="post">
 
 <table width="700px" border="0"><tr>
 <td><input type="button" name="return" id="return"
-  value="Retour" onClick="onreturn()"/>&nbsp;&nbsp;
+  value="Retour" onclick="onreturn()"/>&nbsp;&nbsp;
 <input type="button" name="new" id="new"
-  value="Cr&eacute;er" onClick="pickup_item()"/></td>
+  value="Cr&eacute;er" onclick="pickup_item()"/></td>
 <td align="right" width="400px"><fieldset>
 <legend>Recherche suivant</legend>
 <select name="ruvrblistis_cont_col">
-    <option value="str_ruvip_inf"	
+    <option value="str_ruvrb_inf"	
 		<?php if (isset($_POST['ruvrblistis_cont_col'])
-			&& $_POST['ruvrblistis_cont_col']=="str_ruvip_inf") 
-				echo "selected"; ?> >Imperfectif</option>
-    <option value="str_ruvpd_inf"	
-		<?php if (isset($_POST['ruvrblistis_cont_col'])
-			&& $_POST['ruvrblistis_cont_col']=="str_ruvpd_inf") 
-				echo "selected"; ?> >Perfectif</option>
-    <option value="str_ruvpi_inf"	
-		<?php if (isset($_POST['ruvrblistis_cont_col'])
-			&& $_POST['ruvrblistis_cont_col']=="str_ruvpi_inf") 
-				echo "selected"; ?> >Ind&eacute;termin&eacute;</option>
+			&& $_POST['ruvrblistis_cont_col']=="str_ruvrb_inf") 
+				echo "selected"; ?> >Infinitif russe</option>
     <option value="str_indic"
 		<?php if (isset($_POST['ruvrblistis_cont_col'])
 			&& $_POST['ruvrblistis_cont_col']=="str_indic") 
 				echo "selected"; ?> >Traduction</option>
 </select>
 <input type="submit" name="contenant_btn" id="contenant_btn" 
-  value="Contenant" onClick="onsearch()"/>
+  value="Contenant" onclick="onsearch()"/>
 <input type="text" name="ruvrblistis_cont_txt" id="ruvrblistis_cont_txt" size="16" maxlength="16"
 	<?php 
 	if (isset($_POST['ruvrblistis_cont_txt']))
@@ -173,7 +169,7 @@ function onposition(idx, id) {
 		$str_idx = htmlentities($item->idx, ENT_COMPAT, "UTF-8");
 		print "\t\t<span class=\"page_index\" "
 			. "onclick=\"onposition('{$str_idx}', '{$item->id}')\">"
-			. "&gt; <b>" . $item->idx . "</b></span>&nbsp;&nbsp;\n";
+			. "&gt; <b>" . remove_accent($item->idx) . "</b></span>&nbsp;&nbsp;\n";
 	}
 
     /* Connecting, selecting database */
@@ -200,7 +196,7 @@ function onposition(idx, id) {
 		&& isset($_POST['ruvrblistis_pos_id']) && strlen($_POST['ruvrblistis_pos_val']) > 0) {
 		$where_pos_val = addslashes($_POST["ruvrblistis_pos_val"]);
 		$where_pos_vallen = strlen($where_pos_val);
-		$where_pos_idxval = "str_ruvip_inf";
+		$where_pos_idxval = "str_ruvipna_inf";
 		$where_pos = "("
 			. "STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val . "\") > 0 "
 			. "OR (STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val ."\") = 0"
@@ -210,24 +206,32 @@ function onposition(idx, id) {
 	
 	/* Other condition */
 	$where_cond = "(1 = 1)";
-	$where_col = "str_ruvip_inf";
+	$where_col = "str_ruvrb_inf";
 	if (isset($_POST['ruvrblistis_cont_col']))
 		switch($_POST['ruvrblistis_cont_col']) {
-		case "str_ruvpd_inf": $where_col = "str_ruvpd_inf"; break;
-		case "str_ruvpi_inf": $where_col = "str_ruvpi_inf"; break;
 		case "str_indic": $where_col = "str_indic"; break;
 		}
 	if (array_key_exists("ruvrblistis_cont_txt", $_POST) 
 		&& strlen(ltrim($_POST["ruvrblistis_cont_txt"])) > 0)
-		$where_cond = "(ruvrb." . $where_col . " LIKE \"%" 
-			. addslashes($_POST["ruvrblistis_cont_txt"]) . "%\")";
-	
-    $query = "SELECT ruvrb.id, ruvrb.str_ruvip_inf, ruvrb.str_ruvpd_inf, ruvrb.str_ruvpi_inf "
+	    if ($where_col == "str_ruvrb_inf") {
+	        $where_cond	= "(str_ruvipna_inf LIKE \"%"
+                . addslashes($_POST["ruvrblistis_cont_txt"]) . "%\"";
+            $where_cond = $where_cond . " OR str_ruvpdna_inf LIKE \"%"
+                . addslashes($_POST["ruvrblistis_cont_txt"]) . "%\"";
+            $where_cond = $where_cond . " OR str_ruvpina_inf LIKE \"%"
+                . addslashes($_POST["ruvrblistis_cont_txt"]) . "%\"";
+            $where_cond .= ")";
+	    } else
+	        $where_cond = "(" . $where_col . " LIKE \"%"
+                . addslashes($_POST["ruvrblistis_cont_txt"]) . "%\")";
+    
+    $query = "SELECT ruvrb.id, ruvrb.str_ruvip_inf, ruvrb.str_ruvipna_inf, "
+        .           "ruvrb.str_ruvpd_inf, ruvrb.str_ruvpi_inf "
 		. "FROM item LEFT JOIN ruvrb ON item.id_item=ruvrb.id "
 		. "WHERE item.id_type =" . D_LISTE_RUVRB . " "
 		. "   AND item.id_liste = {$id_liste} "
 		. "   AND {$where_pos} AND {$where_cond} "
-		. "ORDER BY str_ruvip_inf, id "
+		. "ORDER BY str_ruvipna_inf, id "
 		. "LIMIT " . D_APPW_LOC_RUVRB_LIMIT;
 
 	if (($result = $dbh->query($query)) === FALSE) {
@@ -260,7 +264,7 @@ function onposition(idx, id) {
 		if ($iLine > D_APPW_LOC_RUVRB_PAGELENGTH) {
 			$iLine=1; $iPage++;
 			// Milestone the index
-			array_push($arrPage, new O_Milestone($line['str_ruvip_inf'], $line['str_ruvip_inf'], $line['id']));
+			array_push($arrPage, new O_Milestone($line['str_ruvip_inf'], $line['str_ruvipna_inf'], $line['id']));
 		}
 
 		if ($iPage == 1) {
@@ -268,9 +272,12 @@ function onposition(idx, id) {
 			$trClass = ($fPair)? "pair" : "impair";
 			
 			print "\t<tr class='{$trClass}'>\n";
-			print "\t\t<td onclick=\"onsel('{$line['id']}')\">{$line['str_ruvip_inf']}</td>\n";
-			print "\t\t<td onclick=\"onsel('{$line['id']}')\">{$line['str_ruvpd_inf']}</td>\n";
-			print "\t\t<td onclick=\"onsel('{$line['id']}')\">{$line['str_ruvpi_inf']}</td>\n";
+			print "\t\t<td onclick=\"onsel('{$line['id']}')\">" .
+			     change_accent_HTML($line['str_ruvip_inf']) . "</td>\n";
+			print "\t\t<td onclick=\"onsel('{$line['id']}')\">" .
+			     change_accent_HTML($line['str_ruvpd_inf']) . "</td>\n";
+			print "\t\t<td onclick=\"onsel('{$line['id']}')\">" .
+			     change_accent_HTML($line['str_ruvpi_inf']) . "</td>\n";
 			print "\t\t<td onclick=\"onsup('{$line['id']}')\" align=\"center\">"
 				. "<img src=\"../ico16-assoc-delete.gif\" alt=\"Supprimer de la liste\"/></td>\n";
 			print "\t</tr>\n";

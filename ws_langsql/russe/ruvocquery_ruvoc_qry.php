@@ -19,6 +19,7 @@
 	include_once("../util/app_ses.inc.php");
 	include_once("ruvocquery.inc.php");
 
+	include_once("ruutil.inc.php");
 	ouvertureSession();
 ?>
 <head>
@@ -28,11 +29,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,vocable,query,prononciation">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Vocables en russe - Traduction du fran&ccedil;ais au russe</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -60,8 +62,10 @@ function on_reponse(id_voc) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement des éléments constituant l'exercice                      --> 
 <!----------------------------------------------------------------------------->
-<h2>Vocabulaire russe - Traduction du fran&ccedil;ais au russe</h1>
-<form name="formulaire" id="formulaire" action="ruvocquery_ruvoc.php" method="POST">
+<div id = "principal">
+<h2>Vocabulaire russe - Traduction du fran&ccedil;ais au russe</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruvocquery_ruvoc.php" method="post">
 <?php
 	include_once("../util/app_sql.inc.php");
 
@@ -120,17 +124,19 @@ function on_reponse(id_voc) {
 
 	    print "\t<tr class=\"{$trClass}\">\n";
         print "\t\t<td id=\"id_ruvoc{$i}\">{$line['str_trafr']}";
-          if (strlen($line['str_frctx']) == 0)
+        if (strlen($line['str_frctx']) == 0)
             print "</td>\n";
-          else
-            print " <i>({$line['str_frctx']})</i></td>\n";
+        else {
+            $str = $line['str_frctx'];
+            print " <span class=\"ctx\">{$str}</span></td>\n";
+        }
         print "\t\t<td>"
         	. "<input type='text' id='id_test{$i}' class='russe' size='32' maxlength='64'"
         		. " onblur='onblur_test({$i})'/></td>\n";
         print "\t\t<td><img src='../redbullet.gif' id='id_bullet{$i}'"
         		. " onclick='onclick_bullet({$i})'></td>\n";
         print "\t\t<td id=\"id_rep{$i}\" onclick=\"on_reponse('{$str_id}')\" style='visibility: hidden'>"
-        	. "{$line['str_ruvoc']}</td>\n";
+        . change_accent_HTML($line['str_ruvoc']) . "</td>\n";
         print "\t</tr>\n";
     }
     print "</table>\n";

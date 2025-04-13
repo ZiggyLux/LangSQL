@@ -31,11 +31,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="langue,russe,phrase,liste">
 <link href="../styles.css" rel="stylesheet" type="text/css">
-<script language="javascript" type="text/javascript" src="../scripts.js"></script>
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
+<<script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Phrases russes - Listes d'une phrase</title>
 </head>
 <body>
-<?php include("../russe/menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -92,16 +93,18 @@ function pickup_liste() {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement de la table avec les vocables de la base de données      --> 
 <!----------------------------------------------------------------------------->
-<h1>Liste d'une phrase - Gestion</h1>
-<form name="formulaire" id="formulaire" method="POST">
+<div id = "principal">
+<h2>Liste d'une phrase - Gestion</h2>
+</div>
+<form name="formulaire" id="formulaire" method="post">
 
 <table width="500px" border="0"><tr>
-<td><input type="button" value="Retour" onClick="onreturn()"/>&nbsp;&nbsp;
+<td><input type="button" value="Retour" onclick="onreturn()"/>&nbsp;&nbsp;
 <input type="button" name="new" id="new"
-  value="Cr&eacute;er" onClick="pickup_liste()"/></td>
+  value="Cr&eacute;er" onclick="pickup_liste()"/></td>
 <td align="right" width="300px"><fieldset>
 <legend>Recherche suivant</legend>
-<input type="submit" value="Contenant" onClick="onsearch()"/>
+<input type="submit" value="Contenant" onclick="onsearch()"/>
 <input type="text" name="ruphrinlist_cont_txt" id="ruphrinlist_cont_txt" size="16" maxlength="16"
 	   value=""/>
 </fieldset></td>

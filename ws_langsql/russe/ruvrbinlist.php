@@ -32,11 +32,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="langue,russe,verbe,liste">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Verbes russes - Listes d'un verbe</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -93,18 +94,20 @@ function pickup_liste() {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement de la table avec les verbes de la base de données        --> 
 <!----------------------------------------------------------------------------->
-<h1>Liste d'un verbe - Gestion</h1>
-<form name="formulaire" id="formulaire" method="POST">
+<div id = "principal">
+<h2>Liste d'un verbe - Gestion</h2>
+</div>
+<form name="formulaire" id="formulaire" method="post">
 
 <table width="500px" border="0"><tr>
 <td><input type="button" name="return" id="return"
-  value="Retour" onClick="onreturn()"/>&nbsp;&nbsp;
+  value="Retour" onclick="onreturn()"/>&nbsp;&nbsp;
 <input type="button" name="new" id="new"
-  value="Cr&eacute;er" onClick="pickup_liste()"/></td>
+  value="Cr&eacute;er" onclick="pickup_liste()"/></td>
 <td align="right" width="300px"><fieldset>
 <legend>Recherche suivant nom</legend>
 <input type="submit" name="contenant_btn" id="contenant_btn" 
-  value="Contenant" onClick="onsearch()"/>
+  value="Contenant" onclick="onsearch()"/>
 <input type="text" name="ruvrbinlist_cont_txt" id="ruvrbinlist_cont_txt" size="16" maxlength="16"
 	   value=""/>
 </fieldset></td>

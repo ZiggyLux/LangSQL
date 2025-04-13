@@ -28,11 +28,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,verbe,query,conjugaison">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Verbes russes - Conjugaison</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 
 <script language="javascript" type="text/javascript">
 <!--
@@ -61,8 +62,10 @@ function on_reponse(id_vrb) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement des éléments constituant l'exercice                      --> 
 <!----------------------------------------------------------------------------->
-<h2>Verbes russes - Conjugaison</h1>
-<form name="formulaire" id="formulaire" action="ruvrbquery_ruvrb.php" method="POST">
+<div id = "principal">
+<h2>Verbes russes - Conjugaison</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruvrbquery_ruvrb.php" method="post">
 <?php
 	include_once("../util/app_sql.inc.php");
 

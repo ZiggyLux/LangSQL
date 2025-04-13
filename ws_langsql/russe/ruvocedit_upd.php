@@ -26,11 +26,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,vocable">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Vocabulaire russe - Edition</title>
 </head>
 <body>
-<?php include("../russe/menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -50,7 +51,9 @@ function onreturn(str) {
 
 //-->
 </script>
-<h1>Mise &agrave; jour d'un vocable russe - Confirmation</h1>
+<div id = "principal">
+<h2>Mise &agrave; jour d'un vocable russe - Confirmation</h2>
+</div>
 <hr >
 <?php
 /*----------------------------------------------------------------------------*/
@@ -161,7 +164,7 @@ function delete_row_items () {
 	
     echo "L'objet " . hed_he($_POST['ruvoc']) . " a &eacute;t&eacute; mis &agrave; jour."; 
 ?>
-<form name="formulaire" id="formulaire" method="POST">
+<form name="formulaire" id="formulaire" method="post">
 <p><input type="submit" onclick="onreturn()" value="Retour"/></p>
 </form>
 <hr >

@@ -28,12 +28,13 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,vocable">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Russe - Vocabulaire</title>
 </head>
 
 <body onLoad="init_form()">
-<?php include("../russe/menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript" name="valid" id="valid">
 <!--
 
@@ -304,8 +305,10 @@ function onSuppress() {
 <!----------------------------------------------------------------------------->
 <!-- DESCRIPTION DU FORMULAIRE                                               --> 
 <!----------------------------------------------------------------------------->
-<h1>Mise &agrave; jour d'un vocable russe</h1>
-<form name="formulaire" id="formulaire" action="ruvocedit_upd.php" method="POST" 
+<div id = "principal">
+<h2>Mise &agrave; jour d'un vocable russe</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruvocedit_upd.php" method="post" 
   onsubmit="return isvalid();">
 
 <!--  Identifiant (masqué)                                                   -->
@@ -316,13 +319,13 @@ function onSuppress() {
 <table>
 <!--  Vocable russe                                                          -->
 <tr>
-<td><a onClick="on_help('ruvoc')"><label for="ruvoc">Vocable russe</label></a></td>
-<td><input class="russe" type="text" name="ruvoc" id="ruvoc" size="32" maxlength="64" onBlur="onblur_ruvoc()"
+<td><a onclick="on_help('ruvoc')"><label for="ruvoc">Vocable russe</label></a></td>
+<td><input class="russe" type="text" name="ruvoc" id="ruvoc" size="32" maxlength="64" onblur="onblur_ruvoc()"
 	value=<?php	echo "\"" . ((isset($_POST['str_ruvoc']))? hed_he($_POST['str_ruvoc']): 
 	(($_POST['ruvocedit_mod']!="ins")? hed_he($line['str_ruvoc']): "")) . "\""; ?>/>
 &nbsp;<img name="bull_ruvoc" id="bull_ruvoc" src="../redbullet.gif"></td>
 
-<td><a onClick="on_help('ruidx')"><label for="ruidx">Index russe</label></a></td>
+<td><a onclick="on_help('ruidx')"><label for="ruidx">Index russe</label></a></td>
 <td><input class="russe" type="text" name="ruidx" id="ruidx" size="32" maxlength="64"
   onblur="onblur_ruidx()" value=<?php
     if ($_POST["ruvocedit_mod"]!="ins")
@@ -334,7 +337,7 @@ function onSuppress() {
 
 <!--  Catégorie vocable russe et prononciation                          -->
 <tr>
-<td><a onClick="on_help('rucat')"><label for="rucat">Cat.voc.russe</label></a></td>
+<td><a onclick="on_help('rucat')"><label for="rucat">Cat.voc.russe</label></a></td>
 <td><input type="text" name="rucat" id="rucat" size="32" maxlength="32"
   value=<?php
     if ($_POST["ruvocedit_mod"]!="ins")
@@ -342,7 +345,7 @@ function onSuppress() {
     else
         echo "\"\"";
 ?>/></td>
-<td><a onClick="on_help('prono')"><label for="prono">Prononciation</label></a></td>
+<td><a onclick="on_help('prono')"><label for="prono">Prononciation</label></a></td>
 <td><input type="text" name="prono" id="prono" size="32" maxlength="64"
   onblur="onblur_prono()" value=<?php
     if ($_POST["ruvocedit_mod"]!="ins")
@@ -354,7 +357,7 @@ function onSuppress() {
 </table>
 
 <!--  Contexte vocable russe                                               -->
-<a onClick="on_help('ructx')"><label for="ructx">Contexte</label></a><br>
+<a onclick="on_help('ructx')"><label for="ructx">Contexte</label></a><br>
 <textarea class="russe" name="ructx" rows="2" cols="60" wrap="soft"><?php
     if ($_POST["ruvocedit_mod"]!="ins")
         echo $line["str_ructx"]; 
@@ -363,7 +366,7 @@ function onSuppress() {
 <table>
 <!--  Vocable français                                                       -->
 <tr>
-<td><a onClick="on_help('trafr')"><label for="trafr">Traduc.Fran&ccedil;.</label></a></td>
+<td><a onclick="on_help('trafr')"><label for="trafr">Traduc.Fran&ccedil;.</label></a></td>
 <td><input type="text" name="trafr" id="trafr" size="32" maxlength="64"
   onblur="onblur_trafr()" value=<?php
     if ($_POST["ruvocedit_mod"]!="ins")
@@ -371,7 +374,7 @@ function onSuppress() {
     else
         echo "\"\"";
 ?>/>&nbsp;<img name="bull_trafr" id="bull_trafr" src="../redbullet.gif"></td>
-<td><a onClick="on_help('fridx')"><label for="fridx">Index fran&ccedil;.</label></a></td>
+<td><a onclick="on_help('fridx')"><label for="fridx">Index fran&ccedil;.</label></a></td>
 <td><input type="text" name="fridx" id="fridx" size="32" maxlength="64"
   onblur="onblur_fridx()" value=<?php
     if ($_POST["ruvocedit_mod"]!="ins")
@@ -383,7 +386,7 @@ function onSuppress() {
 
 <!--  Catégorie vocable français                                            -->
 <tr>
-<td><a onClick="on_help('frcat')"><label for="frcat">Cat.voc.fran&ccedil;.</label></a></td>
+<td><a onclick="on_help('frcat')"><label for="frcat">Cat.voc.fran&ccedil;.</label></a></td>
 <td><input type="text" name="frcat" id="frcat" size="32" maxlength="32"
   value=<?php
     if ($_POST["ruvocedit_mod"]!="ins")
@@ -396,7 +399,7 @@ function onSuppress() {
 </table>
 
 <!--  Contexte vocable français                                            -->
-<a onClick="on_help('frctx')"><label for="frctx">Contexte</label></a><br>
+<a onclick="on_help('frctx')"><label for="frctx">Contexte</label></a><br>
 <textarea name="frctx" rows="2" cols="60" wrap="soft"><?php
     if ($_POST["ruvocedit_mod"]!="ins")
         echo $line["str_frctx"]; 
@@ -404,7 +407,7 @@ function onSuppress() {
 
 <br><br>
 <!--  Notes                                                                -->
-<a onClick="on_help('notes')"><label for="notes">Notes</label></a><br>
+<a onclick="on_help('notes')"><label for="notes">Notes</label></a><br>
 <textarea name="notes" rows="7" cols="60" wrap="soft"><?php
     if ($_POST["ruvocedit_mod"]!="ins")
         echo $line["str_notes"]; 
@@ -416,7 +419,7 @@ function onSuppress() {
 <hr>
 <input type="button" name="ann" id="ann"
 	value=<?php print (($_POST["ruvocedit_mod"]!="visu")? "\"Annuler\"": "\"Retour\""); ?> 
-	onClick="onreturn()"/>
+	onclick="onreturn()"/>
   &nbsp;&nbsp;<input type="hidden" name="code_action" id="code_action"/><?php
     if ($_POST["ruvocedit_mod"]=="ins") {
         print "\n<input type='submit' name='ins' id='ins'" .

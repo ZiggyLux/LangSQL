@@ -18,6 +18,7 @@
 	include_once("../util/app_mod.inc.php");
 	include_once("../util/app_cod.inc.php");
 	include_once("../liste/liste.inc.php");
+	include_once("ruutil.inc.php");
 	include_once("../util/app_ses.inc.php");
 
 	ouvertureSession();
@@ -34,11 +35,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="langue,russe,phrase">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Phrases de la liste "<?php print $listenom; ?>"</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -119,14 +121,16 @@ function onposition(idx, id) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement de la table avec les phrases de la base de données       --> 
 <!----------------------------------------------------------------------------->
-<h1>Phrases de la liste "<?php print $listenom; ?>" - Gestion</h1>
-<form name="formulaire" id="formulaire" method="POST">
+<div id = "principal">
+<h2>Phrases de la liste "<?php print $listenom; ?>" - Gestion</h2>
+</div>
+<form name="formulaire" id="formulaire" method="post">
 
 <table width="700px" border="0"><tr>
 <td><input type="button" name="return" id="return"
-  value="Retour" onClick="onreturn()"/>&nbsp;&nbsp;
+  value="Retour" onclick="onreturn()"/>&nbsp;&nbsp;
 <input type="button" name="new" id="new"
-  value="Cr&eacute;er" onClick="pickup_item()"/></td>
+  value="Cr&eacute;er" onclick="pickup_item()"/></td>
 <td align="right" width="400px"><fieldset>
 <legend>Recherche suivant</legend>
 <select name="ruphrlistis_cont_col">
@@ -147,7 +151,7 @@ function onposition(idx, id) {
 			&& $_POST['ruphrlistis_cont_col']=="str_indic")
 				echo "selected"; ?> >Indication</option>
 </select>
-<input type="submit" value="Contenant" onClick="onsearch()"/>
+<input type="submit" value="Contenant" onclick="onsearch()"/>
 <input type="text" name="ruphrlistis_cont_txt" id="ruphrlistis_cont_txt" size="16" maxlength="80"
 	<?php 
 	if (isset($_POST['ruphrlistis_cont_txt']))
@@ -200,7 +204,7 @@ function onposition(idx, id) {
 		&& isset($_POST['ruphrlistis_pos_id']) && strlen($_POST['ruphrlistis_pos_val']) > 0) {
 		$where_pos_val = addslashes($_POST["ruphrlistis_pos_val"]);
 		$where_pos_vallen = strlen($where_pos_val);
-		$where_pos_idxval = "str_ruidx";
+		$where_pos_idxval = "str_ruidxna";
 		$where_pos = "("
 			. "STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val . "\") > 0 "
 			. "OR (STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val ."\") = 0" 
@@ -210,7 +214,7 @@ function onposition(idx, id) {
 	
 	/* Other condition */
 	$where_cond = "(1 = 1)";
-	$where_col = "str_ruphr";
+	$where_col = "str_ruphrna";
 	if (isset($_POST['ruphrlistis_cont_col']))
 		switch($_POST['ruphrlistis_cont_col']) {
 		case "str_ruidx": $where_col = "str_ruidx"; break;
@@ -222,12 +226,12 @@ function onposition(idx, id) {
 		$where_cond = "(ruphr." . $where_col . " LIKE \"%"
 			. addslashes($_POST["ruphrlistis_cont_txt"]) . "%\")";
 	
-    $query = "SELECT ruphr.id, ruphr.str_ruphr, ruphr.str_ruidx, ruphr.str_indic "
+    $query = "SELECT ruphr.id, ruphr.str_ruphr, ruphr.str_ruidxna, ruphr.str_indic "
 		. "FROM item LEFT JOIN ruphr ON item.id_item=ruphr.id "
 		. "WHERE item.id_type =" . D_LISTE_RUPHR . " "
 		. "   AND item.id_liste = {$id_liste} "
 		. "   AND {$where_pos} AND {$where_cond} "
-		. "ORDER BY ruphr.str_ruidx, ruphr.id "
+		. "ORDER BY ruphr.str_ruidxna, ruphr.id "
 		. "LIMIT " . D_APPW_LOC_RUPHR_LIMIT;
 
 	if (($result = $dbh->query($query)) === FALSE) {
@@ -258,14 +262,15 @@ function onposition(idx, id) {
 		if ($iLine > D_APPW_LOC_RUPHR_PAGELENGTH) {
 			$iLine=1; $iPage++;
 			// Milestone the index
-			array_push($arrPage, new O_Milestone($line['str_ruphr'], $line['str_ruidx'], $line['id']));
+			array_push($arrPage, new O_Milestone($line['str_ruphr'], $line['str_ruidxna'], $line['id']));
 		}
 
 		if ($iPage == 1) {
 			$fPair = !$fPair;
 			$trClass = ($fPair)? "pair" : "impair";
 			print "\t<tr class='{$trClass}'>\n";
-			print "\t\t<td onclick=\"onsel('{$line['id']}')\">{$line['str_ruphr']}";
+			print "\t\t<td onclick=\"onsel('{$line['id']}')\">";
+			print change_accent_HTML($line['str_ruphr']);
 			if (strlen($line['str_indic']) == 0)
 				print "</td>\n";
 			else

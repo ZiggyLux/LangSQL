@@ -27,6 +27,7 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="manuel,liste">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Listes <?php 
 	switch($_POST['listetype']) {
@@ -39,7 +40,7 @@
 </head>
 
 <body onLoad="init_form()">
-<?php include("../russe/menu_russe.inc.php"); ?>
+<?php include("../russe/ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript" name="valid" id="valid">
 <!--
 
@@ -199,16 +200,18 @@ function onSuppress() {
 <!----------------------------------------------------------------------------->
 <!-- DESCRIPTION DU FORMULAIRE                                               --> 
 <!----------------------------------------------------------------------------->
-<h1>Mise &agrave; jour d'une liste <?php 
+<div id = "principal">
+<h2>Mise &agrave; jour d'une liste <?php 
 	switch($_POST['listetype']) {
 	case "1": print("de vocables russes"); break;
 	case "2": print("de verbes russes"); break;
 	case "3": print("de phrases russes"); break;
 	default: print("de ???");
 	}
-?> </h1>
-<form name="formulaire" id="formulaire" action="listeedit_upd.php" method="POST"
-	onSubmit="return isvalid();">
+?> </h2>
+</div>
+<form name="formulaire" id="formulaire" action="listeedit_upd.php" method="post"
+	onsubmit="return isvalid();">
 <?php
 //	include_once("../util/app_mod_hidposvar.inc.php");
 //	hidePostedVar();
@@ -229,7 +232,7 @@ function onSuppress() {
 <table>
 <!--  Nom de liste  -->
 <tr>
-<td><a onClick="on_help('nom')"><label for="nom">Nom de liste</label></a></td>
+<td><a onclick="on_help('nom')"><label for="nom">Nom de liste</label></a></td>
 <td><input type="text" name="nom" id="nom" size="64" maxlength="64"
   onblur="onblur_nom()" value=<?php
     if ($_POST['listeedit_mod']!="ins")
@@ -241,7 +244,7 @@ function onSuppress() {
 </table>
 
 <!--  Notes  -->
-<a onClick="on_help('notes')"><label for="notes">Notes</label></a><br>
+<a onclick="on_help('notes')"><label for="notes">Notes</label></a><br>
 <textarea name="notes" rows="15" cols="60" wrap="soft"><?php
     if ($_POST['listeedit_mod']!="ins")
         print $line['str_notes']; 
@@ -251,7 +254,7 @@ function onSuppress() {
 <!--                                  BOUTONS                                -->
 <!----------------------------------------------------------------------------->
 <hr>
-<input type="button" name="ann" id="ann" value="Retour" onClick="onreturn()"/>
+<input type="button" name="ann" id="ann" value="Retour" onclick="onreturn()"/>
 <input type="hidden" name="code_action" id="code_action"
     value=<?php echo "\"" . $_POST['listeedit_mod'] . "\""; ?>/>
 	

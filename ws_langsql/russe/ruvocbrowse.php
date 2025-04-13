@@ -17,6 +17,7 @@
 	include_once("../util/app_mod.inc.php");
 	include_once("../util/app_cod.inc.php");
 	include_once("../liste/liste.inc.php");
+	include_once("ruutil.inc.php");
 ?>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -25,11 +26,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,vocable">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Vocables en russe - Gestion</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -85,6 +87,13 @@ function onsearch() {
 }
 
 /*----------------------------------------------------------------------------*/
+/* Effacement du mot à rechercher                                             */
+/*----------------------------------------------------------------------------*/
+function clearcont() {
+	document.formulaire.ruvocbrowse_cont_txt.value = "";
+}
+
+/*----------------------------------------------------------------------------*/
 /* SOUMISSION en repositionnement                                             */
 /*----------------------------------------------------------------------------*/
 function onposition(idx, id) {
@@ -111,14 +120,16 @@ function onlistes() {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement de la table avec les vocables de la base de données      --> 
 <!----------------------------------------------------------------------------->
-<h1>Vocabulaire russe - Gestion</h1>
-<form name="formulaire" id="formulaire" action="ruvocedit.php" method="POST">
+<div id = "principal">
+<h2>Vocabulaire russe - Gestion</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruvocedit.php" method="post">
 
 <table width="700px" border="0"><tr>
 <td><input type="button" name="listes" id="listes"
-  value="Listes" onClick="onlistes()"/>&nbsp;&nbsp;
+  value="Listes" onclick="onlistes()"/>&nbsp;&nbsp;
 <input type="button" name="new" id="new"
-  value="Cr&eacute;er" onClick="onnew()"/></td>
+  value="Cr&eacute;er" onclick="onnew()"/></td>
 <td align="right" width="400px"><fieldset>
 <legend>Recherche suivant</legend>
 <select name="ruvocbrowse_cont_col">
@@ -139,12 +150,13 @@ function onlistes() {
 			&& $_POST['ruvocbrowse_cont_col']=="str_fridx")
 				echo "selected"; ?> >Index fran&ccedil;ais</option>
 </select>
-<input type="submit" value="Contenant" onClick="onsearch()"/>
+<input type="submit" value="Contenant" onclick="onsearch()"/>
 <input type="text" name="ruvocbrowse_cont_txt" id="ruvocbrowse_cont_txt" size="16" maxlength="80"
 	<?php 
 	if (isset($_POST['ruvocbrowse_cont_txt']))
 		echo "value=\"" . hed_he($_POST['ruvocbrowse_cont_txt']) . "\"";
 	?>/>
+<input type="button" name="videcont" id="videcont" value="*" onclick="clearcont()"/>
 </fieldset></td>
 </tr></table>
 <?php
@@ -165,7 +177,7 @@ function onlistes() {
 		$str_idx = htmlentities($item->idx, ENT_COMPAT, "UTF-8");
 		print "\t\t<span class=\"page_index\" "
 			. "onclick=\"onposition('{$str_idx}', '{$item->id}')\">"
-			. "&gt; <b>" . $item->idx . "</b></span>&nbsp;&nbsp;\n";
+			. "&gt; <b>" . remove_accent($item->idx) . "</b></span>&nbsp;&nbsp;\n";
 	}
 
     /* Connecting, selecting database */
@@ -179,7 +191,7 @@ function onlistes() {
 		&& isset($_POST['ruvocbrowse_pos_id']) && strlen($_POST['ruvocbrowse_pos_val']) > 0) {
 		$where_pos_val = addslashes($_POST["ruvocbrowse_pos_val"]);
 		$where_pos_vallen = strlen($where_pos_val);
-		$where_pos_idxval = "str_ruidx";
+		$where_pos_idxval = "str_ruidxna";
 		$where_pos = "("
 			. "STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val . "\") > 0 "
 			. "OR (STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val ."\") = 0"
@@ -189,7 +201,7 @@ function onlistes() {
 	
 	/* Other condition */
 	$where_cond = "(1 = 1)";
-	$where_col = "str_ruvoc";
+	$where_col = "str_ruvocna";
 	if (isset($_POST['ruvocbrowse_cont_col']))
 		switch($_POST['ruvocbrowse_cont_col']) {
 		case "str_ruidx": $where_col = "str_ruidx"; break;
@@ -201,9 +213,9 @@ function onlistes() {
 		$where_cond = "(" . $where_col . " LIKE \"%" 
 			. addslashes($_POST["ruvocbrowse_cont_txt"]) . "%\")";
 		
-	$query = "SELECT id, str_ruvoc, str_ruidx, str_ructx "
+	$query = "SELECT id, str_ruvoc, str_ruidxna, str_ructx "
 		. "FROM ruvoc WHERE {$where_pos} AND {$where_cond} "
-		. "ORDER BY str_ruidx, id "
+		. "ORDER BY str_ruidxna, id "
 		. "LIMIT " . D_APPW_LOC_RUVOC_LIMIT;
 		
 	if (($result = $dbh->query($query)) === FALSE) {
@@ -236,7 +248,8 @@ function onlistes() {
 		if ($iLine > D_APPW_LOC_RUVOC_PAGELENGTH) {
 			$iLine=1; $iPage++;
 			// Milestone the index
-			array_push($arrPage, new O_Milestone($line['str_ruvoc'], $line['str_ruidx'], $line['id']));
+			array_push($arrPage, 
+			    new O_Milestone($line['str_ruvoc'], $line['str_ruidxna'], $line['id']));
 		}
 
 		if ($iPage == 1) {
@@ -248,11 +261,13 @@ function onlistes() {
 			print "</td>\n";
 			
 			print "\t\t<td>"
-			  . $line['str_ruvoc'];
+			  . change_accent_HTML($line['str_ruvoc']);
 			  if (strlen($line['str_ructx']) == 0)
 				print "</td>\n";
-			  else
-				print " <i>({$line['str_ructx']})</i></td>\n";
+			  else {
+				$str = change_accent_HTML($line['str_ructx']);
+				print " <span class=\"ctx\">{$str}</span></td>\n";
+			  }
 				
 			print "\t</tr>\n";
 		}
@@ -271,7 +286,6 @@ function onlistes() {
 <!-- By page walking: http data -->
 <input type="hidden" name="ruvocbrowse_pos_val" id="ruvocbrowse_pos_val" value=""/>
 <input type="hidden" name="ruvocbrowse_pos_id" id="ruvocbrowse_pos_id" value="0"/>
-
 </form>
 <hr >
 <?php include_once("../util/app_mod_panel.inc.php"); ?>

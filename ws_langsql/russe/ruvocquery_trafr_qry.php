@@ -19,6 +19,7 @@
 	include_once("../util/app_ses.inc.php");
 	include_once("ruvocquery.inc.php");
 
+	include_once("ruutil.inc.php");
 	ouvertureSession();
 ?>
 <head>
@@ -28,11 +29,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,vocable,query,prononciation">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Vocables en russe - Traduction du russe au fran&ccedil;ais</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -60,8 +62,11 @@ function on_reponse(id_voc) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement des éléments constituant l'exercice                      --> 
 <!----------------------------------------------------------------------------->
-<h2>Vocabulaire russe - Traduction du russe au fran&ccedil;ais</h1>
-<form name="formulaire" id="formulaire" action="ruvocquery_trafr.php" method="POST">
+
+<div id = "principal">
+<h2>Vocabulaire russe - Traduction du russe au fran&ccedil;ais</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruvocquery_trafr.php" method="post">
 <?php
 	include_once("../util/app_sql.inc.php");
 
@@ -119,11 +124,13 @@ function on_reponse(id_voc) {
 		$str_id = $line['id'];
 
 	    print "\t<tr class=\"{$trClass}\">\n";
-        print "\t\t<td id=\"id_ruvoc{$i}\">{$line['str_ruvoc']}";
-          if (strlen($line['str_ructx']) == 0)
+	    print "\t\t<td id=\"id_ruvoc{$i}\">" . change_accent_HTML($line['str_ruvoc']);
+	    if (strlen($line['str_ructx']) == 0)
             print "</td>\n";
-          else
-            print " <i>({$line['str_ructx']})</i></td>\n";
+        else {
+            $str = change_accent_HTML($line['str_ructx']);
+            print " <span class=\"ctx\">{$str}</span></td>\n";
+        }
         print "\t\t<td>"
         	. "<input type='text' id='id_test{$i}' size='32' maxlength='64'"
         		. " onblur='onblur_test({$i})'/></td>\n";

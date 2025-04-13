@@ -31,12 +31,13 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="liste">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Liste - S&eacute;lection</title>
 </head>
 
 <body>
-<?php include("../russe/menu_russe.inc.php"); ?>
+<?php include("../russe/ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -95,18 +96,20 @@ function onposition(idx, id) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement de la table avec les éditeurs de la base de données      --> 
 <!----------------------------------------------------------------------------->
-<h1>Listes - S&eacute;lection</h1>
-<form name="formulaire" id="formulaire" onSubmit="onsearch()" method="POST">
+<div id = "principal">
+<h2>Listes - S&eacute;lection</h2>
+</div>
+<form name="formulaire" id="formulaire" onsubmit="onsearch()" method="post">
 <?php
 	include_once("../util/app_mod_hidposvar.inc.php");
 	hidePostedVar();
 ?>
 
 <table width="500px" border="0"><tr>
-<td><input type="button" value="Retour" onClick="onreturn()"/></td>
+<td><input type="button" value="Retour" onclick="onreturn()"/></td>
 <td align="right" width="300px"><fieldset>
 <legend>Recherche suivant nom</legend>
-<input type="submit" value="Contenant" onClick="onsearch()"/>
+<input type="submit" value="Contenant" onclick="onsearch()"/>
 <input type="text" name="listepickup_cont_txt" id="listepickup_cont_txt" size="16" maxlength="16"
 	   value=""/>
 </fieldset></td>

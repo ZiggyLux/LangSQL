@@ -32,11 +32,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,vocable,query,prononciation">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Vocables en russe - Traduction du russe au fran&ccedil;ais</title>
 </head>
 <body onload="init_form()">
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 
 <script type="text/javascript" language="javascript" src="../util/app_mut.js"></script>
 
@@ -254,8 +255,10 @@ function on_etendue(str) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement des éléments constituant l'exercice                      --> 
 <!----------------------------------------------------------------------------->
-<h2>Vocabulaire russe - Traduction du russe au fran&ccedil;ais</h1>
-<form name="formulaire" id="formulaire" method="POST"
+<div id = "principal">
+<h2>Vocabulaire russe - Traduction du russe au fran&ccedil;ais</h2>
+</div>
+<form name="formulaire" id="formulaire" method="post"
 	action="ruvocquery_trafr_qry.php" onsubmit="return isvalid();">
 
 <!-- Identifiants masqués servant au pickup -->

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-sources>
+	<data-source id="sqlite_jdbc-169829417d4-754ba2f8260ca2de" provider="generic" driver="sqlite_jdbc" name="SQLite - CitationsZero.db" save-password="true" show-system-objects="true" read-only="false">
+		<connection server="" database="C:\Users\Marc\Documents\Librairie Sources\CppLab\sqlite_clt\CitationsZero.db" url="jdbc:sqlite:C:\Users\Marc\Documents\Librairie Sources\CppLab\sqlite_clt\CitationsZero.db" type="dev"/>
+	</data-source>
+</data-sources>

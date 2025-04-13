@@ -30,11 +30,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,phrase,query,traduction">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Phrases en russe - Traduction du fran&ccedil;ais au russe</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 
 <script language="javascript" type="text/javascript">
 <!--
@@ -62,8 +63,10 @@ function on_reponse(id_phr) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement des éléments constituant l'exercice                      --> 
 <!----------------------------------------------------------------------------->
-<h2>Phrases russes - Traduction du fran&ccedil;ais au russe</h1>
-<form name="formulaire" id="formulaire" action="ruphrquery_ruphr.php" method="POST">
+<div id = "principal">
+<h2>Phrases russes - Traduction du fran&ccedil;ais au russe</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruphrquery_ruphr.php" method="post">
 <?php
 	include_once("../util/app_sql.inc.php");
 
@@ -73,7 +76,7 @@ function on_reponse(id_phr) {
 	/* Tirage aléatoire */
 	
 	if (isset($_POST["id_lgrtest"])) {
-		$lgrtestDef = 8; // default value
+		$lgrtestDef = 5; // default value
 		$lgrtest = intval($_POST["id_lgrtest"]);
 		if (($lgrtest <= 0) || ($lgrtest > 100))
 			$lgrtest = $lgrtestDef;

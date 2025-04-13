@@ -28,6 +28,7 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,vocable,query,prononciation">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Vocables en russe - Exercice de prononciation</title>
 </head>
@@ -59,8 +60,10 @@ function on_reponse(id_voc) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement des éléments constituant l'exercice                      --> 
 <!----------------------------------------------------------------------------->
-<h2>Vocabulaire russe - Exercice de prononciation</h1>
-<form name="formulaire" id="formulaire" action="ruvocquery_prono.php" method="POST">
+<div id = "principal">
+<h2>Vocabulaire russe - Exercice de prononciation</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruvocquery_prono.php" method="post">
 <?php
 	include_once("../util/app_sql.inc.php");
 

@@ -17,7 +17,8 @@
 	include_once("../util/app_mod.inc.php");
 	include_once("../util/app_cod.inc.php");
 	include_once("../liste/liste.inc.php");
-?>
+	include_once("ruutil.inc.php");
+	?>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
@@ -25,11 +26,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,phrase">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Phrases en russe - Gestion</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -85,6 +87,13 @@ function onsearch() {
 }
 
 /*----------------------------------------------------------------------------*/
+/* Effacement du mot à rechercher                                             */
+/*----------------------------------------------------------------------------*/
+function clearcont() {
+	document.formulaire.ruphrbrowse_cont_txt.value = "";
+}
+
+/*----------------------------------------------------------------------------*/
 /* SOUMISSION en repositionnement                                             */
 /*----------------------------------------------------------------------------*/
 function onposition(idx, id) {
@@ -112,14 +121,15 @@ function onlistes() {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement de la table avec les phrases de la base de données       --> 
 <!----------------------------------------------------------------------------->
-<h1>Phrases en russe - Gestion</h1>
-<form name="formulaire" id="formulaire" action="ruphredit.php" method="POST">
-
+<div id = "principal">
+<h2>Phrases en russe - Gestion</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruphredit.php" method="post">
 <table width="700px" border="0"><tr>
 <td><input type="button" name="listes" id="listes"
-  value="Listes" onClick="onlistes()"/>&nbsp;&nbsp;
+  value="Listes" onclick="onlistes()"/>&nbsp;&nbsp;
 <input type="button" name="new" id="new"
-  value="Cr&eacute;er" onClick="onnew()"/></td>
+  value="Cr&eacute;er" onclick="onnew()"/></td>
 <td align="right" width="400px"><fieldset>
 <legend>Recherche suivant</legend>
 <select name="ruphrbrowse_cont_col">
@@ -140,12 +150,13 @@ function onlistes() {
 			&& $_POST['ruphrbrowse_cont_col']=="str_indic")
 				echo "selected"; ?> >Index fran&ccedil;ais</option>
 </select>
-<input type="submit" value="Contenant" onClick="onsearch()"/>
+<input type="submit" value="Contenant" onclick="onsearch()"/>
 <input type="text" name="ruphrbrowse_cont_txt" id="ruphrbrowse_cont_txt" size="16" maxlength="80"
 	<?php 
 	if (isset($_POST['ruphrbrowse_cont_txt']))
 		echo "value=\"" . hed_he($_POST['ruphrbrowse_cont_txt']) . "\"";
 	?>/>
+<input type="button" name="videcont" id="videcont" value="*" onclick="clearcont()"/>
 </fieldset></td>
 </tr></table>
 
@@ -167,7 +178,7 @@ function onlistes() {
 		$str_idx = htmlentities($item->idx, ENT_COMPAT, "UTF-8");
 		print "\t\t<span class=\"page_index\" "
 			. "onclick=\"onposition('{$str_idx}', '{$item->id}')\">"
-			. "&gt; <b>" . $item->idx . "</b></span>&nbsp;&nbsp;\n";
+			. "&gt; <b>" . remove_accent($item->idx) . "</b></span>&nbsp;&nbsp;\n";
 	}
 
     /* Connecting, selecting database */
@@ -181,7 +192,7 @@ function onlistes() {
 		&& strlen($_POST['ruphrbrowse_pos_val']) > 0) {
 		$where_pos_val = addslashes($_POST["ruphrbrowse_pos_val"]);
 		$where_pos_vallen = strlen($where_pos_val);
-		$where_pos_idxval = "str_ruidx";
+		$where_pos_idxval = "str_ruidxna";
 		$where_pos = "("
 			. "STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val . "\") > 0 "
 			. "OR (STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val ."\") = 0"
@@ -191,7 +202,7 @@ function onlistes() {
 	
 	/* Other condition */
 	$where_cond = "(1 = 1)";
-	$where_col = "str_ruphr";
+	$where_col = "str_ruphrna";
 	if (isset($_POST['ruphrbrowse_cont_col']))
 		switch($_POST['ruphrbrowse_cont_col']) {
 		case "str_ruidx": $where_col = "str_ruidx"; break;
@@ -202,9 +213,9 @@ function onlistes() {
 		&& strlen(ltrim($_POST["ruphrbrowse_cont_txt"])) > 0)
 		$where_cond = "(" . $where_col . " LIKE \"%" . addslashes($_POST["ruphrbrowse_cont_txt"]) . "%\")";
 
-    $query = "SELECT id, str_ruidx, str_ruphr, str_indic, str_frphr, str_audio "
+    $query = "SELECT id, str_ruidxna, str_ruphr, str_indic, str_frphr, str_audio "
 		. "FROM ruphr WHERE {$where_pos} AND {$where_cond} "
-		. "ORDER BY str_ruidx, id "
+		. "ORDER BY str_ruidxna, id "
 		. "LIMIT " . D_APPW_LOC_RUPHR_LIMIT;
 		
 	if (($result = $dbh->query($query)) === FALSE) {
@@ -238,7 +249,7 @@ function onlistes() {
 		if ($iLine > D_APPW_LOC_RUPHR_PAGELENGTH) {
 			$iLine=1; $iPage++;
 			// Milestone the index
-			array_push($arrPage, new O_Milestone($line['str_ruphr'], $line['str_ruidx'], $line['id']));
+			array_push($arrPage, new O_Milestone($line['str_ruphr'], $line['str_ruidxna'], $line['id']));
 		}
 
 		if ($iPage == 1) {
@@ -249,7 +260,7 @@ function onlistes() {
 			  	. "\"><img src=\"../ico16-liste.gif\" alt=\"Listes contenant ce vocable\"/></span>";
 			print "</td>\n";
 			
-			print "\t\t<td>" . $line['str_ruphr'];
+			print "\t\t<td>" . change_accent_HTML($line['str_ruphr']);
 			print "\t\t<td>{$line['str_audio']}</td>\n";
 			print "\t</tr>\n";
 		}

@@ -17,7 +17,8 @@
 	include_once("../util/app_mod.inc.php");
 	include_once("../util/app_cod.inc.php");
 	include_once("../util/app_ses.inc.php");
-
+	include_once("ruutil.inc.php");
+	
 	ouvertureSession();
 	associePageRetour($_SERVER['SCRIPT_NAME'], "retpag");
 	associeNomVariableRetour($_SERVER['SCRIPT_NAME'], "selvar");
@@ -29,11 +30,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="langue,russe,vocable">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Vocable - S&eacute;lection</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -91,15 +93,17 @@ function onposition(idx, id) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement de la table avec vocables de la base de données          --> 
 <!----------------------------------------------------------------------------->
-<h1>Vocable - S&eacute;lection</h1>
-<form name="formulaire" id="formulaire" onSubmit="onsearch()" method="POST">
+<div id = "principal">
+<h2>Vocable - S&eacute;lection</h2>
+</div>
+<form name="formulaire" id="formulaire" onsubmit="onsearch()" method="post">
 <?php
 	include_once("../util/app_mod_hidposvar.inc.php");
 	hidePostedVar();
 ?>
 
 <table width="700px" border="0"><tr>
-<td><input type="button" value="Retour" onClick="onreturn()"/></td>
+<td><input type="button" value="Retour" onclick="onreturn()"/></td>
 <td align="right" width="400px"><fieldset>
 <legend>Recherche suivant</legend>
 <select name="ruvocpickup_cont_col">
@@ -121,7 +125,7 @@ function onposition(idx, id) {
 				echo "selected"; ?> >Index fran&ccedil;ais</option>
 </select>
 <input type="submit" name="contenant_btn" id="contenant_btn" 
-  value="Contenant" onClick="onsearch()"/>
+  value="Contenant" onclick="onsearch()"/>
 <input type="text" name="ruvocpickup_cont_txt" id="ruvocpickup_cont_txt" size="16" maxlength="80"
 	<?php 
 	if (isset($_POST['ruvocpickup_cont_txt']))
@@ -146,7 +150,7 @@ function onposition(idx, id) {
 		$str_idx = htmlentities($item->idx, ENT_COMPAT, "UTF-8");
 		print "\t\t<span class=\"page_index\" "
 			. "onclick=\"onposition('{$str_idx}', '{$item->id}')\">"
-			. "&gt; <b>" . $item->idx . "</b></span>&nbsp;&nbsp;\n";
+			. "&gt; <b>" . remove_accent($item->idx) . "</b></span>&nbsp;&nbsp;\n";
 	}
 
     /* Connecting, selecting database */
@@ -160,7 +164,7 @@ function onposition(idx, id) {
 		&& strlen($_POST['pick_pos_val']) > 0) {
 		$where_pos_val = addslashes($_POST["pick_pos_val"]);
 		$where_pos_vallen = strlen($where_pos_val);
-		$where_pos_idxval = "str_ruidx";
+		$where_pos_idxval = "str_ruidxna";
 		$where_pos = "("
 			. "STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val . "\") > 0 "
 			. "OR (STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val ."\") = 0"
@@ -170,7 +174,7 @@ function onposition(idx, id) {
 	
 	/* Other condition */
 	$where_cond = "(1 = 1)";
-	$where_col = "str_ruvoc";
+	$where_col = "str_ruvocna";
 	if (isset($_POST['ruvocpickup_cont_col']))
 		switch($_POST['ruvocpickup_cont_col']) {
 		case "str_ruidx": $where_col = "str_ruidx"; break;
@@ -182,11 +186,11 @@ function onposition(idx, id) {
 		$where_cond = "ruvoc." . $where_col . " LIKE \"%" 
 			. addslashes($_POST["ruvocpickup_cont_txt"]) . "%\"";
 	
-    $query = "SELECT ruvoc.id, ruvoc.str_ruvoc, ruvoc.str_ruidx, ruvoc.str_ructx"
+    $query = "SELECT ruvoc.id, ruvoc.str_ruvoc, ruvoc.str_ruidxna, ruvoc.str_ructx"
 		. " FROM ruvoc LEFT JOIN item ON ruvoc.id=item.id_item AND item.id_liste={$_POST['id_liste']}"
 		. " WHERE item.id_item IS NULL"
 		. "     AND {$where_pos} AND {$where_cond}"
-		. " ORDER BY ruvoc.str_ruidx, ruvoc.id"
+		. " ORDER BY ruvoc.str_ruidxna, ruvoc.id"
 		. " LIMIT " . D_APPW_LOC_RUVOC_LIMIT;
 
 	if (($result = $dbh->query($query)) === FALSE) {
@@ -215,18 +219,21 @@ function onposition(idx, id) {
 		if ($iLine > D_APPW_LOC_RUVOC_PAGELENGTH) {
 			$iLine=1; $iPage++;
 			// Milestone the index
-			array_push($arrPage, new O_Milestone($line['str_ruvoc'], $line['str_ruidx'], $line['id']));
+			array_push($arrPage, new O_Milestone($line['str_ruvoc'], $line['str_ruidxna'], $line['id']));
 		}
 
 		if ($iPage == 1) {
 			$fPair = !$fPair;
 			$trClass = ($fPair)? "pair" : "impair";
 			print "\t<tr class=\"{$trClass}\" onclick=\"onsel('{$line['id']}')\">\n";
-			print "\t\t<td>{$line['str_ruvoc']}";
+			print "\t\t<td>" .
+			    change_accent_HTML($line['str_ruvoc']);
 			if (strlen($line['str_ructx']) == 0)
 				print "</td>\n";
-			else
-				print ", <i>{$line['str_ructx']}</i></td>\n";
+			else {
+			    $str = change_accent_HTML($line['str_ructx']);
+			    print " <span class=\"ctx\">{$str}</span></td>\n";
+			}
 			print "\t</tr>\n";
 		}
     }

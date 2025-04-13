@@ -30,6 +30,7 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="listes">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Listes <?php
 	switch($listetype) {
@@ -40,9 +41,8 @@
 	}
 ?> - Gestion</title>
 </head>
-
 <body>
-<?php include("../russe/menu_russe.inc.php"); ?>
+<?php include("../russe/ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -116,6 +116,7 @@ function onsearch() {
     document.formulaire.action = "listebrowse.php";
 	// Bouton SUBMIT...
 }
+
 <!----------------------------------------------------------------------------->
 <!-- SOUMISSION en repositionnement                                          -->
 <!----------------------------------------------------------------------------->
@@ -133,24 +134,26 @@ function onposition(idx, id) {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement de la table avec les livres de la base de données        --> 
 <!----------------------------------------------------------------------------->
-<h1>Listes <?php 
+<div id = "principal">
+<h2>Listes <?php 
 	switch($listetype) {
 	case "1": print("de vocables russes"); break;
 	case "2": print("de verbes russes"); break;
 	case "3": print("de phrases russes"); break;
 	default: print("de ???");
 	}
-?> - Gestion</h1>
-<form name="formulaire" id="formulaire" onSubmit="onsearch()" method="POST">
+?> - Gestion</h2>
+</div>
+<form name="formulaire" id="formulaire" onsubmit="onsearch()" method="post">
 
 <table width="500px" border="0"><tr>
 <td><input type="button" name="return" id="return"
-  value="Retour" onClick="onreturn()"/>&nbsp;&nbsp;
+  value="Retour" onclick="onreturn()"/>&nbsp;&nbsp;
 <input type="button" name="new" id="new"
-  value="Cr&eacute;er" onClick="onnew()"/></td>
+  value="Cr&eacute;er" onclick="onnew()"/></td>
 <td align="right" width="300px"><fieldset>
 <legend>Recherche suivant nom</legend>
-<input type="submit" value="Contenant" onClick="onsearch()"/>
+<input type="submit" value="Contenant" onclick="onsearch()"/>
 <input type="text" name="listebrowse_cont_txt" id="listebrowse_cont_txt" size="16" maxlength="16"
 	   value=""/>
 </fieldset></td>
@@ -275,7 +278,7 @@ function onposition(idx, id) {
 <input type="hidden" name="listebrowse_pos_id" id="listebrowse_pos_id" value="0"/>
 
 </form>
-<hr >
+<hr/>
 <?php include_once("../util/app_mod_panel.inc.php"); ?>
 </body>
 </html>

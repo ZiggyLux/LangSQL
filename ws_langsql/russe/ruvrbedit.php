@@ -28,11 +28,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,verbes">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Russe - Verbes</title>
 </head>
 <body onLoad="init_form()">
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript" name="valid" id="valid">
 <!--
 
@@ -257,8 +258,10 @@ function onSuppress() {
 <!----------------------------------------------------------------------------->
 <!-- DESCRIPTION DU FORMULAIRE                                               --> 
 <!----------------------------------------------------------------------------->
-<h1>Mise &agrave; jour d'un verbe russe</h1>
-<form name="formulaire" id="formulaire" action="ruvrbedit_upd.php" method="POST" 
+<div id = "principal">
+<h2>Mise &agrave; jour d'un verbe russe</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruvrbedit_upd.php" method="post" 
   onsubmit="return isvalid();">
 
 <!--  Identifiant (masqué)                                                   -->
@@ -271,7 +274,7 @@ function onSuppress() {
 <table>
 <!--  Indication pour la traduction                                          -->
 <tr>
-<td><a onClick="on_help('indic')"><label for="indic">Indication</label></a></td>
+<td><a onclick="on_help('indic')"><label for="indic">Indication</label></a></td>
 <td><input type="text" name="indic" id="indic" size="64" maxlength="255"
   value=<?php
     if ($_POST["ruvrbedit_mod"]!="ins")
@@ -283,7 +286,7 @@ function onSuppress() {
 
 <!--  Verbe imperfectif                                                      -->
 <tr>
-<td><a onClick="on_help('ruvip_inf')"><label for="ruvip_inf"><b>IMPERFECTIF</b></label></a></td>
+<td><a onclick="on_help('ruvip_inf')"><label for="ruvip_inf"><b>IMPERFECTIF</b></label></a></td>
 <td><input class="russe" type="text" name="ruvip_inf" id="ruvip_inf" size="20" maxlength="64"
 	onblur="onblur_ruvip_inf()" value=<?php
     if ($_POST["ruvrbedit_mod"]!="ins")
@@ -294,7 +297,7 @@ function onSuppress() {
 </tr>
 
 <tr>
-<td><a onClick="on_help('ruvip_pre')">
+<td><a onclick="on_help('ruvip_pre')">
 	<label for="ruvip_pre">Pr&eacute;sent</label></a></td>
 <td>1s: <input class="russe_sm" type="text" name="ruvip_pre_1s" id="ruvip_pre_1s" size="20" maxlength="64"
   onblur="onblur_ruvip_pre_1s()" value=<?php
@@ -318,7 +321,7 @@ function onSuppress() {
 </tr>
 
 <tr>
-<td><a onClick="on_help('ruvip_pas')">
+<td><a onclick="on_help('ruvip_pas')">
 	<label for="ruvip_pre">Pass&eacute;</label></a></td>
 <td>ms: <input class="russe_sm" type="text" name="ruvip_pas_ms" id="ruvip_pre_ms" size="20" maxlength="64"
   onblur="onblur_ruvip_pas_ms()" value=<?php
@@ -349,7 +352,7 @@ function onSuppress() {
 
 <!--  Verbe perfectif déterminé                                             -->
 <tr>
-<td><a onClick="on_help('ruvpd_inf')">
+<td><a onclick="on_help('ruvpd_inf')">
 	<label for="ruvip_inf"><b>PERFECTIF<br>D&Eacute;TERMIN&Eacute;</b></label></a></td>
 <td><input class="russe" type="text" name="ruvpd_inf" id="ruvpd_inf" size="20" maxlength="64"
   onblur="onblur_ruvpd_inf()" value=<?php
@@ -361,7 +364,7 @@ function onSuppress() {
 </tr>
 
 <tr>
-<td><a onClick="on_help('ruvpd_pre')">
+<td><a onclick="on_help('ruvpd_pre')">
 	<label for="ruvpd_pre">Pr&eacute;sent</label></a></td>
 <td>1s: <input class="russe_sm" type="text" name="ruvpd_pre_1s" id="ruvpd_pre_1s" size="20" maxlength="64"
   onblur="onblur_ruvpd_pre_1s()" value=<?php
@@ -385,7 +388,7 @@ function onSuppress() {
 </tr>
 
 <tr>
-<td><a onClick="on_help('ruvpd_pas')">
+<td><a onclick="on_help('ruvpd_pas')">
 	<label for="ruvpd_pre">Pass&eacute;</label></a></td>
 <td>ms: <input class="russe_sm" type="text" name="ruvpd_pas_ms" id="ruvpd_pre_ms" size="20" maxlength="64"
   onblur="onblur_ruvpd_pas_ms()" value=<?php
@@ -416,7 +419,7 @@ function onSuppress() {
 
 <!--  Verbe imperfectif indéterminé                                          -->
 <tr>
-<td><a onClick="on_help('ruvpi_inf')">
+<td><a onclick="on_help('ruvpi_inf')">
 	<label for="ruvpi_inf"><b>IND&Eacute;TERMIN&Eacute;</b></label></a></td>
 <td><input class="russe" type="text" name="ruvpi_inf" id="ruvpi_inf" size="20" maxlength="64"
   onblur="onblur_ruvpi_inf()" value=<?php
@@ -428,7 +431,7 @@ function onSuppress() {
 </tr>
 
 <tr>
-<td><a onClick="on_help('ruvpi_pre')">
+<td><a onclick="on_help('ruvpi_pre')">
 	<label for="ruvpi_pre">Pr&eacute;sent</label></a></td>
 <td>1s: <input class="russe_sm" type="text" name="ruvpi_pre_1s" id="ruvpi_pre_1s" size="20" maxlength="64"
   onblur="onblur_ruvpi_pre_1s()" value=<?php
@@ -452,7 +455,7 @@ function onSuppress() {
 </tr>
 
 <tr>
-<td><a onClick="on_help('ruvpi_pas')">
+<td><a onclick="on_help('ruvpi_pas')">
 	<label for="ruvpi_pre">Pass&eacute;</label></a></td>
 <td>ms: <input class="russe_sm" type="text" name="ruvpi_pas_ms" id="ruvpi_pre_ms" size="20" maxlength="64"
   onblur="onblur_ruvpi_pas_ms()" value=<?php
@@ -485,7 +488,7 @@ function onSuppress() {
 
 <br>
 <!--  Notes                                                                -->
-<a onClick="on_help('notes')"><label for="notes">Notes</label></a><br>
+<a onclick="on_help('notes')"><label for="notes">Notes</label></a><br>
 <textarea name="notes" rows="4" cols="60" wrap="soft"><?php
     if ($_POST["ruvrbedit_mod"]!="ins")
         echo $line["str_notes"]; 
@@ -497,7 +500,7 @@ function onSuppress() {
 <hr>
 <input type="button" name="ann" id="ann"
 	value=<?php print (($_POST["ruvrbedit_mod"]!="visu")? "\"Annuler\"": "\"Retour\""); ?>
-	onClick="onreturn()"/>
+	onclick="onreturn()"/>
   &nbsp;&nbsp;<input type="hidden" name="code_action" id="code_action"/><?php
     if ($_POST["ruvrbedit_mod"]=="ins") {
         print "\n<input type='submit' name='ins' id='ins'" .

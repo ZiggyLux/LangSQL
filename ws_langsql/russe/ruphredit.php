@@ -30,12 +30,13 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,phrase">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Russe - Phrases</title>
 </head>
 
 <body onLoad="init_form()">
-<?php include("../russe/menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript" name="valid" id="valid">
 <!--
 
@@ -247,8 +248,10 @@ function onSuppress() {
 <!----------------------------------------------------------------------------->
 <!-- DESCRIPTION DU FORMULAIRE                                               --> 
 <!----------------------------------------------------------------------------->
-<h1>Mise &agrave; jour d'une phrase russe</h1>
-<form name="formulaire" id="formulaire" action="ruphredit_upd.php" method="POST" 
+<div id = "principal">
+<h2>Mise &agrave; jour d'une phrase russe</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruphredit_upd.php" method="post" 
   onsubmit="return isvalid();">
 
 <!--  Identifiant (masqué)                                                   -->
@@ -259,7 +262,7 @@ function onSuppress() {
 <table>
 <!--  Index russe                                                          -->
 <tr>
-<td><a onClick="on_help('ruidx')"><label for="ruidx">Index russe</label></a></td>
+<td><a onclick="on_help('ruidx')"><label for="ruidx">Index russe</label></a></td>
 <td><input class="russe" type="text" name="ruidx" id="ruidx" size="32" maxlength="64"
   onblur="onblur_ruidx()" value=<?php
     if ($_POST["ruphredit_mod"]!="ins")
@@ -271,7 +274,7 @@ function onSuppress() {
 
 <!--  Vocable français                                                       -->
 <tr>
-<td><a onClick="on_help('frphr')"><label for="frphr">Traduc.Fran.</label></a></td>
+<td><a onclick="on_help('frphr')"><label for="frphr">Traduc.Fran.</label></a></td>
 <td><input type="text" name="frphr" id="frphr" size="64" maxlength="255"
   onblur="onblur_frphr()" value=<?php
     if ($_POST["ruphredit_mod"]!="ins")
@@ -283,7 +286,7 @@ function onSuppress() {
 
 <!--  Indication pour la traduction                                          -->
 <tr>
-<td><a onClick="on_help('indic')"><label for="indic">Indication</label></a></td>
+<td><a onclick="on_help('indic')"><label for="indic">Indication</label></a></td>
 <td><input type="text" name="indic" id="indic" size="64" maxlength="255"
   value=<?php
     if ($_POST["ruphredit_mod"]!="ins")
@@ -296,7 +299,7 @@ function onSuppress() {
 
 <!--  Phrase russe                                                          -->
 <tr>
-<td><a onClick="on_help('ruphr')"><label for="ruphr">Phrase russe</label></a></td>
+<td><a onclick="on_help('ruphr')"><label for="ruphr">Phrase russe</label></a></td>
 <td><input class="russe" type="text" name="ruphr" id="ruphr" size="64" maxlength="255"
   onblur="onblur_ruphr()" value=<?php
     if ($_POST["ruphredit_mod"]!="ins")
@@ -308,7 +311,7 @@ function onSuppress() {
 
 <!--  Phonétique                                          -->
 <tr>
-<td><a onClick="on_help('rupho')"><label for="rupho">Phon&eacute;tique</label></a></td>
+<td><a onclick="on_help('rupho')"><label for="rupho">Phon&eacute;tique</label></a></td>
 <td><input type="text" name="rupho" id="rupho" size="64" maxlength="255"
   value=<?php
     if ($_POST["ruphredit_mod"]!="ins")
@@ -320,7 +323,7 @@ function onSuppress() {
 
 <!--  Fichier audio                                          -->
 <tr>
-<td><a onClick="on_help('audio')"><label for="audio">Audio</label></a></td>
+<td><a onclick="on_help('audio')"><label for="audio">Audio</label></a></td>
 <td><input type="text" name="audio" id="audio" size="64" maxlength="255"
   value=<?php
     if ($_POST["ruphredit_mod"]!="ins")
@@ -341,7 +344,7 @@ function onSuppress() {
 
 <hr>
 <!--  Notes                                                                -->
-<a onClick="on_help('notes')"><label for="notes">Notes</label></a><br>
+<a onclick="on_help('notes')"><label for="notes">Notes</label></a><br>
 <textarea name="notes" rows="3" cols="60" wrap="soft"><?php
     if ($_POST["ruphredit_mod"]!="ins")
         echo $line["str_notes"]; 
@@ -353,7 +356,7 @@ function onSuppress() {
 <hr>
 <input type="button" name="ann" id="ann"
 	value=<?php print (($_POST["ruphredit_mod"]!="visu")? "\"Annuler\"": "\"Retour\""); ?> 
-	onClick="onreturn()"/>
+	onclick="onreturn()"/>
   &nbsp;&nbsp;<input type="hidden" name="code_action" id="code_action"/><?php
     if ($_POST["ruphredit_mod"]=="ins") {
         print "\n<input type='submit' name='ins' id='ins'" .

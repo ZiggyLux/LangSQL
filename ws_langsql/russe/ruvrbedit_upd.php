@@ -26,11 +26,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,verbes">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Mise &agrave; jour verbes russes - Confirmation</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -50,7 +51,9 @@ function onreturn(str) {
 
 //-->
 </script>
-<h1>Mise &agrave; jour verbes russes - Confirmation</h1>
+<div id = "principal">
+<h2>Mise &agrave; jour verbes russes - Confirmation</h2>
+</div>
 <hr >
 <?php
 /*----------------------------------------------------------------------------*/
@@ -191,7 +194,7 @@ function delete_row_items () {
 	
     echo "L'objet {$_POST['id']} a &eacute;t&eacute; mis &agrave; jour."; 
 ?>
-<form name="formulaire" id="formulaire" method="POST">
+<form name="formulaire" id="formulaire" method="post">
 <p><input type="submit" onclick="onreturn()" value="Retour"/></p>
 </form>
 <hr >

@@ -41,12 +41,13 @@
 <meta name="Author" content="Marc CESARINI">
 <meta name="keywords" content="html,russe">
 <link rel="stylesheet" type="text/css" href="../styles.css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" language="javascript" src="../scripts.js"></script>
 <title>LangSQL Russe - R&eacute;glages</title>
 </head>
 
 <body onload="init_form()">
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 
 <script type="text/javascript" language="javascript" src="../util/app_mut.js"></script>
 <script type="text/javascript" language="javascript" >
@@ -474,9 +475,10 @@ function maj_parametres() {
 
 //-->
 </script>
-<h1>Russe - R&eacute;glages</h1>
-<form name="formulaire" id="formulaire" method="POST">
-
+<div id = "principal">
+<h2>R&eacute;glages</h2>
+</div>
+<form name="formulaire" id="formulaire" method="post">
 <!-- Identifiants masqués servant au pickup -->
 <input type="hidden" name="id_lisDef_ruvocInit" id="id_lisDef_ruvocInit"
 	value=<?php print "'{$id_lisDef_ruvocInit}'" ?>/>

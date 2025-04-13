@@ -17,7 +17,8 @@
 	include_once("../util/app_mod.inc.php");
 	include_once("../util/app_cod.inc.php");
 	include_once("../liste/liste.inc.php");
-?>
+	include_once("ruutil.inc.php");
+	?>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
@@ -25,11 +26,12 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="russe,verbes">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Verbes en russe - Gestion</title>
 </head>
 <body>
-<?php include("menu_russe.inc.php"); ?>
+<?php include("ru_menu.inc.php"); ?>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -84,6 +86,14 @@ function onsearch() {
     // Bouton de type submit...
 }
 
+
+<!----------------------------------------------------------------------------->
+<!-- Effacement du mot à rechercher                                          -->
+<!----------------------------------------------------------------------------->
+function clearcont() {
+	document.formulaire.ruvrbbrowse_cont_txt.value = "";
+}
+
 <!----------------------------------------------------------------------------->
 <!-- SOUMISSION en repositionnement                                          -->
 <!----------------------------------------------------------------------------->
@@ -112,41 +122,36 @@ function onlistes() {
 <!-- DESCRIPTION DU FORMULAIRE                                               -->
 <!--     Chargement de la table avec les verbes de la base de données        --> 
 <!----------------------------------------------------------------------------->
-<h1>Verbes en russe - Gestion</h1>
-<form name="formulaire" id="formulaire" action="ruvrbedit.php" method="POST">
+<div id = "principal">
+<h2>Verbes en russe - Gestion</h2>
+</div>
+<form name="formulaire" id="formulaire" action="ruvrbedit.php" method="post">
 
 <table width="700px" border="0"><tr>
 <td><input type="button" name="listes" id="listes"
-  value="Listes" onClick="onlistes()"/>&nbsp;&nbsp;
+  value="Listes" onclick="onlistes()"/>&nbsp;&nbsp;
 <input type="button" name="new" id="new"
-  value="Cr&eacute;er" onClick="onnew()"/></td>
+  value="Cr&eacute;er" onclick="onnew()"/></td>
 <td align="right" width="400px"><fieldset>
 <legend>Recherche suivant</legend>
 <select name="ruvrbbrowse_cont_col">
-    <option value="str_ruvip_inf"	
+    <option value="str_ruvrb_inf"	
 		<?php if (isset($_POST['ruvrbbrowse_cont_col'])
-			&& $_POST['ruvrbbrowse_cont_col']=="str_ruvip_inf") 
-				echo "selected"; ?> >Imperfectif</option>
-    <option value="str_ruvpd_inf"	
-		<?php if (isset($_POST['ruvrbbrowse_cont_col'])
-			&& $_POST['ruvrbbrowse_cont_col']=="str_ruvpd_inf") 
-				echo "selected"; ?> >Perfectif</option>
-    <option value="str_ruvpi_inf"	
-		<?php if (isset($_POST['ruvrbbrowse_cont_col'])
-			&& $_POST['ruvrbbrowse_cont_col']=="str_ruvpi_inf") 
-				echo "selected"; ?> >Ind&eacute;termin&eacute;</option>
+			&& $_POST['ruvrbbrowse_cont_col']=="str_ruvrb_inf") 
+				echo "selected"; ?> >Infinitif russe</option>
     <option value="str_indic"
 		<?php if (isset($_POST['ruvrbbrowse_cont_col'])
 			&& $_POST['ruvrbbrowse_cont_col']=="str_indic") 
 				echo "selected"; ?> >Traduction</option>
 </select>
 <input type="submit" name="contenant_btn" id="contenant_btn" 
-  value="Contenant" onClick="onsearch()"/>
+  value="Contenant" onclick="onsearch()"/>
 <input type="text" name="ruvrbbrowse_cont_txt" id="ruvrbbrowse_cont_txt" size="16" maxlength="80"
 	<?php 
 	if (isset($_POST['ruvrbbrowse_cont_txt']))
 		echo "value=\"" . hed_he($_POST['ruvrbbrowse_cont_txt']) . "\"";
 	?>/>
+<input type="button" name="videcont" id="videcont" value="*" onclick="clearcont()"/>
 </fieldset></td>
 </tr></table>
 
@@ -168,7 +173,7 @@ function onlistes() {
 		$str_idx = htmlentities($item->idx, ENT_COMPAT, "UTF-8");
 		print "\t\t<span class=\"page_index\" "
 			. "onclick=\"onposition('{$str_idx}', '{$item->id}')\">"
-			. "&gt; <b>" . $item->idx . "</b></span>&nbsp;&nbsp;\n";
+			. "&gt; <b>" . remove_accent($item->idx) . "</b></span>&nbsp;&nbsp;\n";
 	}
 
     /* Connecting, selecting database */
@@ -176,13 +181,14 @@ function onlistes() {
 
     /* Performing SQL query */
 
-	/* By page walking : SQL condition */
+
+    /* By page walking : SQL condition */
 	$where_pos = "(1 = 1)";
 	if (isset($_POST['ruvrbbrowse_pos_val']) && isset($_POST['ruvrbbrowse_pos_id']) 
 		&& strlen($_POST['ruvrbbrowse_pos_val']) > 0) {
 		$where_pos_val = addslashes($_POST["ruvrbbrowse_pos_val"]);
 		$where_pos_vallen = strlen($where_pos_val);
-		$where_pos_idxval = "str_ruvip_inf";
+		$where_pos_idxval = "str_ruvipna_inf";
 		$where_pos = "("
 			. "STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val . "\") > 0 "
 			. "OR (STRCMP(" . $where_pos_idxval . ", \"" . $where_pos_val ."\") = 0"
@@ -192,21 +198,28 @@ function onlistes() {
 	
 	/* Other condition */
 	$where_cond = "(1 = 1)";
-	$where_col = "str_ruvip_inf";
+	$where_col = "str_ruvrb_inf";
 	if (isset($_POST['ruvrbbrowse_cont_col']))
 		switch($_POST['ruvrbbrowse_cont_col']) {
-		case "str_ruvpd_inf": $where_col = "str_ruvpd_inf"; break;
-		case "str_ruvpi_inf": $where_col = "str_ruvpi_inf"; break;
 		case "str_indic": $where_col = "str_indic"; break;
 		}
 	if (array_key_exists("ruvrbbrowse_cont_txt", $_POST) 
 		&& strlen(ltrim($_POST["ruvrbbrowse_cont_txt"])) > 0)
-		$where_cond = "(" . $where_col . " LIKE \"%" 
-			. addslashes($_POST["ruvrbbrowse_cont_txt"]) . "%\")";
+	    if ($where_col == "str_ruvrb_inf") {
+	        $where_cond	= "(str_ruvipna_inf LIKE \"%"
+               . addslashes($_POST["ruvrbbrowse_cont_txt"]) . "%\"";
+	        $where_cond = $where_cond . " OR str_ruvpdna_inf LIKE \"%"
+	           . addslashes($_POST["ruvrbbrowse_cont_txt"]) . "%\"";
+	        $where_cond = $where_cond . " OR str_ruvpina_inf LIKE \"%"
+               . addslashes($_POST["ruvrbbrowse_cont_txt"]) . "%\"";
+             $where_cond .= ")";
+	    } else
+    		$where_cond = "(" . $where_col . " LIKE \"%" 
+    			. addslashes($_POST["ruvrbbrowse_cont_txt"]) . "%\")";
 		
-    $query = "SELECT id, str_ruvip_inf, str_ruvpd_inf, str_ruvpi_inf "
+    $query = "SELECT id, str_ruvip_inf, str_ruvipna_inf, str_ruvpd_inf, str_ruvpi_inf "
         . "FROM ruvrb WHERE {$where_pos} AND {$where_cond} " 
-		. "ORDER BY str_ruvip_inf, id "
+		. "ORDER BY str_ruvipna_inf, id "
 		. "LIMIT " . D_APPW_LOC_RUVRB_LIMIT;
 
 	if (($result = $dbh->query($query)) === FALSE) {
@@ -241,7 +254,7 @@ function onlistes() {
 		if ($iLine > D_APPW_LOC_RUVRB_PAGELENGTH) {
 			$iLine=1; $iPage++;
 			// Milestone the index
-			array_push($arrPage, new O_Milestone($line['str_ruvip_inf'], $line['str_ruvip_inf'], $line['id']));
+			array_push($arrPage, new O_Milestone($line['str_ruvip_inf'], $line['str_ruvipna_inf'], $line['id']));
 		}
 
 		if ($iPage == 1) {
@@ -252,10 +265,10 @@ function onlistes() {
 			  	. "\"><img src=\"../ico16-liste.gif\" alt=\"Listes contenant ce verbe\"/></span>";
 			print "</td>\n";
 			
-			print "\t\t<td>" . $line['str_ruvip_inf'] . "</td>\n";
+			print "\t\t<td>" . change_accent_HTML($line['str_ruvip_inf']) . "</td>\n";
 		   
-			print "\t\t<td>{$line['str_ruvpd_inf']}</td>\n";
-			print "\t\t<td>{$line['str_ruvpi_inf']}</td>\n";
+			print "\t\t<td>" . change_accent_HTML($line['str_ruvpd_inf']) . "</td>\n";
+			print "\t\t<td>" . change_accent_HTML($line['str_ruvpi_inf']) . "</td>\n";
 			print "\t</tr>\n";
 		}
    }

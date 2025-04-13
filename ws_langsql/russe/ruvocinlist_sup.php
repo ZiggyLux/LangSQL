@@ -25,12 +25,15 @@
 <meta name="Author" content="Marc Cesarini">
 <meta name="keywords" content="langue,russe,vocable,liste">
 <link href="../styles.css" rel="stylesheet" type="text/css">
+<link href="../topmenu.css" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript" src="../scripts.js"></script>
 <title>Liste d'un vocable - Suppression</title>
 </head>
 <body>
-<?php include("../russe/menu_russe.inc.php"); ?>
-<h1>Suppression de la liste d'un vocable - Confirmation</h1>
+<?php include("ru_menu.inc.php"); ?>
+<div id = "principal">
+<h2>Suppression de la liste d'un vocable - Confirmation</h2>
+</div>
 <hr >
 <?php
 /*----------------------------------------------------------------------------*/
@@ -64,7 +67,7 @@ function delete_row () {
 	
     print("<br>\nL'association a &eacute;t&eacute; supprim&eacute;e."); 
 ?>
-<form name="formulaire" id="formulaire" action="ruvocinlist.php" method="POST">
+<form name="formulaire" id="formulaire" action="ruvocinlist.php" method="post">
 <p><input type="submit" value="Retour"/></p>
 </form>
 <hr >
