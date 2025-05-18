@@ -204,14 +204,14 @@ function onlistes() {
 	$where_col = "str_ruvocna";
 	if (isset($_POST['ruvocbrowse_cont_col']))
 		switch($_POST['ruvocbrowse_cont_col']) {
-		case "str_ruidx": $where_col = "str_ruidx"; break;
+		case "str_ruidx": $where_col = "str_ruidxna"; break;
 		case "str_trafr": $where_col = "str_trafr"; break;
 		case "str_fridx": $where_col = "str_fridx"; break;
 		}
 	if (array_key_exists("ruvocbrowse_cont_txt", $_POST)
 		&& strlen(ltrim($_POST["ruvocbrowse_cont_txt"])) > 0)
-		$where_cond = "(" . $where_col . " LIKE \"%" 
-			. addslashes($_POST["ruvocbrowse_cont_txt"]) . "%\")";
+		$where_cond = "(" . $where_col . " LIKE \"%"
+            . addslashes(remove_accent($_POST["ruvocbrowse_cont_txt"])) . "%\")";
 		
 	$query = "SELECT id, str_ruvoc, str_ruidxna, str_ructx "
 		. "FROM ruvoc WHERE {$where_pos} AND {$where_cond} "

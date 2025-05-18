@@ -217,14 +217,14 @@ function onposition(idx, id) {
 	$where_col = "str_ruphrna";
 	if (isset($_POST['ruphrlistis_cont_col']))
 		switch($_POST['ruphrlistis_cont_col']) {
-		case "str_ruidx": $where_col = "str_ruidx"; break;
+		case "str_ruidx": $where_col = "str_ruidxna"; break;
 		case "str_frphr": $where_col = "str_frphr"; break;
 		case "str_indic": $where_col = "str_indic"; break;
 		}
 	if (array_key_exists("ruphrlistis_cont_txt", $_POST)
 		&& strlen(ltrim($_POST["ruphrlistis_cont_txt"])) > 0)
 		$where_cond = "(ruphr." . $where_col . " LIKE \"%"
-			. addslashes($_POST["ruphrlistis_cont_txt"]) . "%\")";
+			. addslashes(remove_accent($_POST["ruphrlistis_cont_txt"])) . "%\")";
 	
     $query = "SELECT ruphr.id, ruphr.str_ruphr, ruphr.str_ruidxna, ruphr.str_indic "
 		. "FROM item LEFT JOIN ruphr ON item.id_item=ruphr.id "

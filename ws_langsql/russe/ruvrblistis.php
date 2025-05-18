@@ -215,11 +215,11 @@ function onposition(idx, id) {
 		&& strlen(ltrim($_POST["ruvrblistis_cont_txt"])) > 0)
 	    if ($where_col == "str_ruvrb_inf") {
 	        $where_cond	= "(str_ruvipna_inf LIKE \"%"
-                . addslashes($_POST["ruvrblistis_cont_txt"]) . "%\"";
+                . addslashes(remove_accent($_POST["ruvrblistis_cont_txt"])) . "%\"";
             $where_cond = $where_cond . " OR str_ruvpdna_inf LIKE \"%"
-                . addslashes($_POST["ruvrblistis_cont_txt"]) . "%\"";
+                . addslashes(remove_accent($_POST["ruvrblistis_cont_txt"])) . "%\"";
             $where_cond = $where_cond . " OR str_ruvpina_inf LIKE \"%"
-                . addslashes($_POST["ruvrblistis_cont_txt"]) . "%\"";
+                . addslashes(remove_accent($_POST["ruvrblistis_cont_txt"])) . "%\"";
             $where_cond .= ")";
 	    } else
 	        $where_cond = "(" . $where_col . " LIKE \"%"

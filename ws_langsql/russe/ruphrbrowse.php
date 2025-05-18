@@ -205,13 +205,14 @@ function onlistes() {
 	$where_col = "str_ruphrna";
 	if (isset($_POST['ruphrbrowse_cont_col']))
 		switch($_POST['ruphrbrowse_cont_col']) {
-		case "str_ruidx": $where_col = "str_ruidx"; break;
+		case "str_ruidx": $where_col = "str_ruidxna"; break;
 		case "str_frphr": $where_col = "str_frphr"; break;
 		case "str_indic": $where_col = "str_indic"; break;
 		}
 	if (array_key_exists("ruphrbrowse_cont_txt", $_POST)
 		&& strlen(ltrim($_POST["ruphrbrowse_cont_txt"])) > 0)
-		$where_cond = "(" . $where_col . " LIKE \"%" . addslashes($_POST["ruphrbrowse_cont_txt"]) . "%\")";
+		$where_cond = "(" . $where_col . " LIKE \"%" 
+            . addslashes(remove_accent($_POST["ruphrbrowse_cont_txt"])) . "%\")";
 
     $query = "SELECT id, str_ruidxna, str_ruphr, str_indic, str_frphr, str_audio "
 		. "FROM ruphr WHERE {$where_pos} AND {$where_cond} "
